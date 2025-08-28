@@ -1,0 +1,27 @@
+-- Create dvr_activity table
+CREATE TABLE IF NOT EXISTS `dvr_activity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(50) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `dvr_time` datetime DEFAULT NULL,
+  `login_time` datetime DEFAULT NULL,
+  `system_time` datetime DEFAULT NULL,
+  `total_cameras` int(11) DEFAULT NULL,
+  `storage_type` varchar(20) DEFAULT NULL,
+  `storage_status` varchar(50) DEFAULT NULL,
+  `storage_capacity` varchar(50) DEFAULT NULL,
+  `storage_free` varchar(50) DEFAULT NULL,
+  `recording_from` datetime DEFAULT NULL,
+  `recording_to` datetime DEFAULT NULL,
+  `cam1_status` varchar(20) DEFAULT NULL,
+  `cam2_status` varchar(20) DEFAULT NULL,
+  `cam3_status` varchar(20) DEFAULT NULL,
+  `cam4_status` varchar(20) DEFAULT NULL,
+  `cam5_status` varchar(20) DEFAULT NULL,
+  `cam6_status` varchar(20) DEFAULT NULL,
+  `cam7_status` varchar(20) DEFAULT NULL,
+  `cam8_status` varchar(20) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `idx_ip_created` (`ip_address`, `created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 

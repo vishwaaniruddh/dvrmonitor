@@ -1,0 +1,414 @@
+[2025-06-09 14:40:46] Attempting to save data for IP: 10.126.36.245
+[2025-06-09 14:40:46] Binding parameters for IP: 10.126.36.245
+[2025-06-09 14:40:46] Successfully saved data for IP: 10.126.36.245
+[2025-06-09 14:40:46] Attempting to save data for IP: 10.137.0.34
+[2025-06-09 14:40:46] Binding parameters for IP: 10.137.0.34
+[2025-06-09 14:40:46] Successfully saved data for IP: 10.137.0.34
+[2025-06-09 14:40:51] Attempting to save data for IP: 10.109.8.5
+[2025-06-09 14:40:51] Binding parameters for IP: 10.109.8.5
+[2025-06-09 14:40:51] Successfully saved data for IP: 10.109.8.5
+[2025-06-09 14:41:29] Attempting to save data for IP: 172.55.50.25
+[2025-06-09 14:41:29] Binding parameters for IP: 172.55.50.25
+[2025-06-09 14:41:29] Successfully saved data for IP: 172.55.50.25
+[2025-06-09 14:41:35] Attempting to save data for IP: 10.109.11.9
+[2025-06-09 14:41:35] Binding parameters for IP: 10.109.11.9
+[2025-06-09 14:41:35] Successfully saved data for IP: 10.109.11.9
+[2025-06-09 14:41:35] Attempting to save data for IP: 10.185.182.248
+[2025-06-09 14:41:35] Binding parameters for IP: 10.185.182.248
+[2025-06-09 14:41:35] Successfully saved data for IP: 10.185.182.248
+[2025-06-09 14:41:44] Attempting to save data for IP: 10.126.36.214
+[2025-06-09 14:41:44] Binding parameters for IP: 10.126.36.214
+[2025-06-09 14:41:44] Successfully saved data for IP: 10.126.36.214
+[2025-06-09 14:41:47] Attempting to save data for IP: 172.55.50.107
+[2025-06-09 14:41:47] Binding parameters for IP: 172.55.50.107
+[2025-06-09 14:41:47] Successfully saved data for IP: 172.55.50.107
+[2025-06-09 14:41:49] Attempting to save data for IP: 10.126.36.243
+[2025-06-09 14:41:49] Binding parameters for IP: 10.126.36.243
+[2025-06-09 14:41:49] Successfully saved data for IP: 10.126.36.243
+[2025-06-09 14:41:49] Attempting to save data for IP: 10.126.36.222
+[2025-06-09 14:41:49] Binding parameters for IP: 10.126.36.222
+[2025-06-09 14:41:49] Successfully saved data for IP: 10.126.36.222
+[2025-06-09 14:41:49] Attempting to save data for IP: 10.126.36.218
+[2025-06-09 14:41:49] Binding parameters for IP: 10.126.36.218
+[2025-06-09 14:41:49] Successfully saved data for IP: 10.126.36.218
+[2025-06-09 14:41:52] Attempting to save data for IP: 10.126.36.219
+[2025-06-09 14:41:52] Binding parameters for IP: 10.126.36.219
+[2025-06-09 14:41:52] Successfully saved data for IP: 10.126.36.219
+[2025-06-09 14:43:53] Attempting to save data for IP: 172.55.50.76
+[2025-06-09 14:43:53] Attempting to save data for IP: 172.55.50.6
+[2025-06-09 14:43:53] Binding parameters for IP: 172.55.50.76
+[2025-06-09 14:43:53] Attempting to save data for IP: 10.109.9.151
+[2025-06-09 14:43:53] Successfully saved data for IP: 172.55.50.76
+[2025-06-09 14:43:53] Binding parameters for IP: 10.109.9.151
+[2025-06-09 14:43:53] Successfully saved data for IP: 10.109.9.151
+[2025-06-09 14:43:53] Binding parameters for IP: 172.55.50.6
+[2025-06-09 14:43:53] Successfully saved data for IP: 172.55.50.6
+[2025-06-09 14:43:55] Attempting to save data for IP: 10.126.36.245
+[2025-06-09 14:43:55] Binding parameters for IP: 10.126.36.245
+[2025-06-09 14:43:55] Successfully saved data for IP: 10.126.36.245
+[2025-06-09 14:43:55] Attempting to save data for IP: 10.137.0.34
+[2025-06-09 14:43:55] Binding parameters for IP: 10.137.0.34
+[2025-06-09 14:43:55] Successfully saved data for IP: 10.137.0.34
+[2025-06-09 14:43:57] Attempting to save data for IP: 172.55.50.83
+[2025-06-09 14:43:57] Attempting to save data for IP: 172.55.51.222
+[2025-06-09 14:43:57] Binding parameters for IP: 172.55.50.83
+[2025-06-09 14:43:57] Successfully saved data for IP: 172.55.50.83
+[2025-06-09 14:43:57] Binding parameters for IP: 172.55.51.222
+[2025-06-09 14:43:57] Attempting to save data for IP: 172.55.50.20
+[2025-06-09 14:43:57] Successfully saved data for IP: 172.55.51.222
+[2025-06-09 14:43:57] Binding parameters for IP: 172.55.50.20
+[2025-06-09 14:43:57] Successfully saved data for IP: 172.55.50.20
+[2025-06-09 14:43:59] Attempting to save data for IP: 172.55.50.25
+[2025-06-09 14:43:59] Binding parameters for IP: 172.55.50.25
+[2025-06-09 14:43:59] Successfully saved data for IP: 172.55.50.25
+[2025-06-09 14:44:02] Attempting to save data for IP: 10.109.8.5
+[2025-06-09 14:44:02] Binding parameters for IP: 10.109.8.5
+[2025-06-09 14:44:02] Successfully saved data for IP: 10.109.8.5
+[2025-06-09 14:44:04] Attempting to save data for IP: 172.55.50.89
+[2025-06-09 14:44:04] Attempting to save data for IP: 10.109.11.9
+[2025-06-09 14:44:04] Attempting to save data for IP: 10.236.212.171
+[2025-06-09 14:44:04] Binding parameters for IP: 172.55.50.89
+[2025-06-09 14:44:04] Binding parameters for IP: 10.236.212.171
+[2025-06-09 14:44:04] Binding parameters for IP: 10.109.11.9
+[2025-06-09 14:44:04] Successfully saved data for IP: 10.236.212.171
+[2025-06-09 14:44:04] Successfully saved data for IP: 172.55.50.89
+[2025-06-09 14:44:04] Successfully saved data for IP: 10.109.11.9
+[2025-06-09 14:44:08] Attempting to save data for IP: 10.185.182.248
+[2025-06-09 14:44:08] Binding parameters for IP: 10.185.182.248
+[2025-06-09 14:44:08] Successfully saved data for IP: 10.185.182.248
+[2025-06-09 14:44:09] Attempting to save data for IP: 10.126.36.214
+[2025-06-09 14:44:09] Binding parameters for IP: 10.126.36.214
+[2025-06-09 14:44:09] Successfully saved data for IP: 10.126.36.214
+[2025-06-09 14:44:12] Attempting to save data for IP: 172.55.50.107
+[2025-06-09 14:44:12] Binding parameters for IP: 172.55.50.107
+[2025-06-09 14:44:12] Successfully saved data for IP: 172.55.50.107
+[2025-06-09 14:44:15] Attempting to save data for IP: 10.126.36.222
+[2025-06-09 14:44:15] Binding parameters for IP: 10.126.36.222
+[2025-06-09 14:44:15] Successfully saved data for IP: 10.126.36.222
+[2025-06-09 14:44:16] Attempting to save data for IP: 10.126.36.243
+[2025-06-09 14:44:16] Binding parameters for IP: 10.126.36.243
+[2025-06-09 14:44:16] Successfully saved data for IP: 10.126.36.243
+[2025-06-09 14:44:16] Attempting to save data for IP: 10.126.36.218
+[2025-06-09 14:44:16] Binding parameters for IP: 10.126.36.218
+[2025-06-09 14:44:16] Successfully saved data for IP: 10.126.36.218
+[2025-06-09 14:44:18] Attempting to save data for IP: 10.126.36.219
+[2025-06-09 14:44:18] Binding parameters for IP: 10.126.36.219
+[2025-06-09 14:44:18] Successfully saved data for IP: 10.126.36.219
+[2025-06-10 17:19:56] Attempting to save data for IP: 172.55.50.76
+[2025-06-10 17:19:56] Binding parameters for IP: 172.55.50.76
+[2025-06-10 17:19:56] Binding parameters for IP: 10.109.9.151
+[2025-06-10 17:19:56] Successfully saved data for IP: 172.55.50.76
+[2025-06-10 17:19:56] Successfully saved data for IP: 10.109.9.151
+[2025-06-10 17:19:58] Attempting to save data for IP: 172.55.50.6
+[2025-06-10 17:19:58] Binding parameters for IP: 172.55.50.6
+[2025-06-10 17:19:58] Successfully saved data for IP: 172.55.50.6
+[2025-06-10 17:20:03] Attempting to save data for IP: 10.137.0.34
+[2025-06-10 17:20:03] Binding parameters for IP: 10.137.0.34
+[2025-06-10 17:20:03] Successfully saved data for IP: 10.137.0.34
+[2025-06-10 17:20:03] Attempting to save data for IP: 10.126.36.245
+[2025-06-10 17:20:03] Binding parameters for IP: 10.126.36.245
+[2025-06-10 17:20:03] Successfully saved data for IP: 10.126.36.245
+[2025-06-10 17:20:04] Attempting to save data for IP: 172.55.51.222
+[2025-06-10 17:20:04] Attempting to save data for IP: 172.55.50.20
+[2025-06-10 17:20:04] Attempting to save data for IP: 172.55.50.25
+[2025-06-10 17:20:04] Binding parameters for IP: 172.55.51.222
+[2025-06-10 17:20:04] Binding parameters for IP: 172.55.50.20
+[2025-06-10 17:20:04] Successfully saved data for IP: 172.55.50.25
+[2025-06-10 17:20:04] Successfully saved data for IP: 172.55.51.222
+[2025-06-10 17:20:04] Successfully saved data for IP: 172.55.50.20
+[2025-06-10 17:20:04] Binding parameters for IP: 172.55.50.83
+[2025-06-10 17:20:04] Successfully saved data for IP: 172.55.50.83
+[2025-06-10 17:20:10] Attempting to save data for IP: 10.109.8.5
+[2025-06-10 17:20:10] Binding parameters for IP: 10.109.8.5
+[2025-06-10 17:20:10] Successfully saved data for IP: 10.109.8.5
+[2025-06-10 17:20:11] Attempting to save data for IP: 10.236.212.171
+[2025-06-10 17:20:11] Attempting to save data for IP: 172.55.50.89
+[2025-06-10 17:20:11] Binding parameters for IP: 10.236.212.171
+[2025-06-10 17:20:11] Binding parameters for IP: 172.55.50.89
+[2025-06-10 17:20:11] Successfully saved data for IP: 172.55.50.89
+[2025-06-10 17:20:11] Successfully saved data for IP: 10.236.212.171
+[2025-06-10 17:20:16] Attempting to save data for IP: 10.185.182.248
+[2025-06-10 17:20:16] Binding parameters for IP: 10.185.182.248
+[2025-06-10 17:20:16] Successfully saved data for IP: 10.185.182.248
+[2025-06-10 17:20:16] Attempting to save data for IP: 10.126.36.214
+[2025-06-10 17:20:16] Binding parameters for IP: 10.126.36.214
+[2025-06-10 17:20:16] Successfully saved data for IP: 10.126.36.214
+[2025-06-10 17:20:20] Attempting to save data for IP: 10.109.11.9
+[2025-06-10 17:20:20] Binding parameters for IP: 10.109.11.9
+[2025-06-10 17:20:20] Successfully saved data for IP: 10.109.11.9
+[2025-06-10 17:20:24] Attempting to save data for IP: 172.55.50.107
+[2025-06-10 17:20:24] Binding parameters for IP: 172.55.50.107
+[2025-06-10 17:20:24] Successfully saved data for IP: 172.55.50.107
+[2025-06-10 17:20:26] Attempting to save data for IP: 10.126.36.218
+[2025-06-10 17:20:26] Binding parameters for IP: 10.126.36.218
+[2025-06-10 17:20:26] Successfully saved data for IP: 10.126.36.218
+[2025-06-10 17:20:26] Attempting to save data for IP: 10.126.36.219
+[2025-06-10 17:20:26] Binding parameters for IP: 10.126.36.219
+[2025-06-10 17:20:26] Successfully saved data for IP: 10.126.36.219
+[2025-06-10 17:20:26] Attempting to save data for IP: 10.126.36.243
+[2025-06-10 17:20:26] Binding parameters for IP: 10.126.36.243
+[2025-06-10 17:20:26] Successfully saved data for IP: 10.126.36.243
+[2025-06-10 17:20:28] Attempting to save data for IP: 10.126.36.222
+[2025-06-10 17:20:28] Binding parameters for IP: 10.126.36.222
+[2025-06-10 17:20:28] Successfully saved data for IP: 10.126.36.222
+[2025-06-10 17:20:29] Attempting to save data for IP: 172.55.50.21
+[2025-06-10 17:20:29] Attempting to save data for IP: 172.55.50.91
+[2025-06-10 17:20:29] Binding parameters for IP: 172.55.50.21
+[2025-06-10 17:20:29] Binding parameters for IP: 172.55.50.91
+0.95
+[2025-06-10 17:20:29] Successfully saved data for IP: 172.55.50.91
+[2025-06-10 17:20:29] Attempting to save data for IP: 172.55.50.8
+[2025-06-10 17:20:29] Binding parameters for IP: 172.55.50.8
+[2025-06-10 17:20:29] Successfully saved data for IP: 172.55.50.21
+[2025-06-10 17:20:29] Successfully saved data for IP: 172.55.50.8
+[2025-06-10 17:20:29] Binding parameters for IP: 172.55.50.95
+[2025-06-10 17:20:29] Successfully saved data for IP: 172.55.50.95
+[2025-06-10 17:20:37] Attempting to save data for IP: 10.126.36.249
+[2025-06-10 17:20:37] Binding parameters for IP: 10.126.36.249
+[2025-06-10 17:20:37] Successfully saved data for IP: 10.126.36.249
+[2025-06-10 17:20:38] Attempting to save data for IP: 172.55.51.252
+[2025-06-10 17:20:38] Attempting to save data for IP: 10.126.36.221
+[2025-06-10 17:20:38] Binding parameters for IP: 172.55.51.252
+[2025-06-10 17:20:38] Attempting to save data for IP: 172.55.50.12
+[2025-06-10 17:20:38] Successfully saved data for IP: 172.55.51.252
+[2025-06-10 17:20:38] Binding parameters for IP: 10.126.36.221
+[2025-06-10 17:20:38] Successfully saved data for IP: 10.126.36.221
+[2025-06-10 17:20:38] Binding parameters for IP: 172.55.50.12
+[2025-06-10 17:20:38] Successfully saved data for IP: 172.55.50.12
+[2025-06-10 17:20:43] Attempting to save data for IP: 10.126.36.232
+[2025-06-10 17:20:43] Binding parameters for IP: 10.126.36.232
+[2025-06-10 17:20:43] Successfully saved data for IP: 10.126.36.232
+[2025-06-10 17:20:45] Attempting to save data for IP: 10.126.36.233
+[2025-06-10 17:20:45] Binding parameters for IP: 10.126.36.233
+[2025-06-10 17:20:45] Successfully saved data for IP: 10.126.36.233
+[2025-06-10 17:20:46] Attempting to save data for IP: 10.109.10.77
+[2025-06-10 17:20:46] Binding parameters for IP: 10.109.10.77
+[2025-06-10 17:20:46] Attempting to save data for IP: 172.55.50.82
+[2025-06-10 17:20:46] Successfully saved data for IP: 10.109.10.77
+[2025-06-10 17:20:46] Binding parameters for IP: 172.55.50.82
+[2025-06-10 17:20:46] Successfully saved data for IP: 172.55.50.82
+[2025-06-10 17:20:52] Attempting to save data for IP: 10.126.37.33
+[2025-06-10 17:20:52] Binding parameters for IP: 10.126.37.33
+[2025-06-10 17:20:52] Successfully saved data for IP: 10.126.37.33
+[2025-06-10 17:20:52] Attempting to save data for IP: 10.126.36.231
+[2025-06-10 17:20:52] Binding parameters for IP: 10.126.36.231
+[2025-06-10 17:20:52] Successfully saved data for IP: 10.126.36.231
+[2025-06-10 17:21:13] Attempting to save data for IP: 172.55.50.88
+[2025-06-10 17:21:13] Binding parameters for IP: 172.55.50.88
+[2025-06-10 17:21:13] Successfully saved data for IP: 172.55.50.88
+[2025-06-10 17:41:20] Attempting to save data for IP: 10.109.9.151
+[2025-06-10 17:41:20] Attempting to save data for IP: 172.55.50.76
+[2025-06-10 17:41:20] Binding parameters for IP: 10.109.9.151
+[2025-06-10 17:41:20] Binding parameters for IP: 172.55.50.76
+[2025-06-10 17:41:20] Successfully saved data for IP: 10.109.9.151
+[2025-06-10 17:41:20] Successfully saved data for IP: 172.55.50.76
+[2025-06-10 17:41:27] Attempting to save data for IP: 10.137.0.34
+[2025-06-10 17:41:27] Binding parameters for IP: 10.137.0.34
+[2025-06-10 17:41:27] Successfully saved data for IP: 10.137.0.34
+[2025-06-10 17:42:03] Attempting to save data for IP: 172.55.50.6
+[2025-06-10 17:42:03] Binding parameters for IP: 172.55.50.6
+[2025-06-10 17:42:03] Successfully saved data for IP: 172.55.50.6
+[2025-06-10 17:43:05] Attempting to save data for IP: 10.126.36.245
+[2025-06-10 17:43:05] Binding parameters for IP: 10.126.36.245
+[2025-06-10 17:43:05] Successfully saved data for IP: 10.126.36.245
+[2025-06-10 17:52:32] Attempting to save data for IP: 10.109.9.151
+[2025-06-10 17:52:32] Binding parameters for IP: 10.109.9.151
+[2025-06-10 17:52:32] Attempting to save data for IP: 172.55.50.76
+[2025-06-10 17:52:32] Successfully saved data for IP: 10.109.9.151
+[2025-06-10 17:52:32] Binding parameters for IP: 172.55.50.76
+[2025-06-10 17:52:32] Successfully saved data for IP: 172.55.50.76
+[2025-06-10 17:52:40] Attempting to save data for IP: 10.126.36.245
+[2025-06-10 17:52:40] Binding parameters for IP: 10.126.36.245
+[2025-06-10 17:52:40] Successfully saved data for IP: 10.126.36.245
+[2025-06-10 17:52:49] Attempting to save data for IP: 10.137.0.34
+[2025-06-10 17:52:49] Binding parameters for IP: 10.137.0.34
+[2025-06-10 17:52:49] Successfully saved data for IP: 10.137.0.34
+[2025-06-10 17:53:39] Attempting to save data for IP: 172.55.50.6
+[2025-06-10 17:53:39] Binding parameters for IP: 172.55.50.6
+[2025-06-10 17:53:39] Successfully saved data for IP: 172.55.50.6
+[2025-06-10 17:53:41] Attempting to save data for IP: 172.55.50.20
+[2025-06-10 17:53:41] Attempting to save data for IP: 172.55.51.222
+[2025-06-10 17:53:41] Attempting to save data for IP: 172.55.50.25
+[2025-06-10 17:53:41] Binding parameters for IP: 172.55.51.222
+[2025-06-10 17:53:41] Attempting to save data for IP: 172.55.50.83
+[2025-06-10 17:53:41] Binding parameters for IP: 172.55.50.20
+[2025-06-10 17:53:41] Successfully saved data for IP: 172.55.51.222
+[2025-06-10 17:53:41] Successfully saved data for IP: 172.55.50.20
+[2025-06-10 17:53:41] Binding parameters for IP: 172.55.50.25
+[2025-06-10 17:53:41] Successfully saved data for IP: 172.55.50.25
+[2025-06-10 17:53:41] Binding parameters for IP: 172.55.50.83
+[2025-06-10 17:53:41] Successfully saved data for IP: 172.55.50.83
+[2025-06-10 17:53:46] Attempting to save data for IP: 10.109.8.5
+[2025-06-10 17:53:46] Binding parameters for IP: 10.109.8.5
+[2025-06-10 17:53:46] Successfully saved data for IP: 10.109.8.5
+[2025-06-10 17:53:48] Attempting to save data for IP: 10.126.36.214
+[2025-06-10 17:53:48] Attempting to save data for IP: 172.55.50.89
+[2025-06-10 17:53:48] Binding parameters for IP: 10.126.36.214
+[2025-06-10 17:53:48] Attempting to save data for IP: 10.236.212.171
+[2025-06-10 17:53:48] Successfully saved data for IP: 10.126.36.214
+[2025-06-10 17:53:48] Binding parameters for IP: 10.236.212.171
+[2025-06-10 17:53:48] Binding parameters for IP: 172.55.50.89
+[2025-06-10 17:53:48] Successfully saved data for IP: 10.236.212.171
+[2025-06-10 17:53:48] Successfully saved data for IP: 172.55.50.89
+[2025-06-10 17:53:54] Attempting to save data for IP: 10.185.182.248
+[2025-06-10 17:53:54] Binding parameters for IP: 10.185.182.248
+[2025-06-10 17:53:54] Successfully saved data for IP: 10.185.182.248
+[2025-06-10 17:53:55] Attempting to save data for IP: 10.109.11.9
+[2025-06-10 17:53:55] Binding parameters for IP: 10.109.11.9
+[2025-06-10 17:53:55] Successfully saved data for IP: 10.109.11.9
+[2025-06-10 17:54:01] Attempting to save data for IP: 10.126.36.219
+[2025-06-10 17:54:01] Binding parameters for IP: 10.126.36.219
+[2025-06-10 17:54:01] Successfully saved data for IP: 10.126.36.219
+[2025-06-10 17:54:02] Attempting to save data for IP: 10.126.36.243
+[2025-06-10 17:54:02] Binding parameters for IP: 10.126.36.243
+[2025-06-10 17:54:02] Successfully saved data for IP: 10.126.36.243
+[2025-06-10 17:54:03] Attempting to save data for IP: 10.126.36.222
+[2025-06-10 17:54:03] Binding parameters for IP: 10.126.36.222
+[2025-06-10 17:54:03] Successfully saved data for IP: 10.126.36.222
+[2025-06-10 17:54:04] Attempting to save data for IP: 10.126.36.218
+[2025-06-10 17:54:04] Binding parameters for IP: 10.126.36.218
+[2025-06-10 17:54:04] Successfully saved data for IP: 10.126.36.218
+[2025-06-10 17:54:20] Attempting to save data for IP: 172.55.50.107
+[2025-06-10 17:54:20] Binding parameters for IP: 172.55.50.107
+[2025-06-10 17:54:20] Successfully saved data for IP: 172.55.50.107
+[2025-06-17 13:47:07] Attempting to save data for IP: 10.109.9.151
+[2025-06-17 13:47:07] Binding parameters for IP: 172.55.50.76
+[2025-06-17 13:47:07] Binding parameters for IP: 10.109.9.151
+[2025-06-17 13:47:07] Successfully saved data for IP: 10.109.9.151
+[2025-06-17 13:47:07] Successfully saved data for IP: 172.55.50.76
+[2025-06-17 13:47:13] Attempting to save data for IP: 10.137.0.34
+[2025-06-17 13:47:13] Binding parameters for IP: 10.137.0.34
+[2025-06-17 13:47:13] Successfully saved data for IP: 10.137.0.34
+[2025-06-17 13:47:14] Attempting to save data for IP: 10.126.36.245
+[2025-06-17 13:47:14] Binding parameters for IP: 10.126.36.245
+[2025-06-17 13:47:14] Successfully saved data for IP: 10.126.36.245
+[2025-06-17 13:47:30] Attempting to save data for IP: 172.55.50.6
+[2025-06-17 13:47:30] Binding parameters for IP: 172.55.50.6
+[2025-06-17 13:47:30] Successfully saved data for IP: 172.55.50.6
+[2025-06-17 13:47:31] Attempting to save data for IP: 172.55.50.20
+[2025-06-17 13:47:31] Binding parameters for IP: 172.55.50.20
+[2025-06-17 13:47:31] Successfully saved data for IP: 172.55.50.20
+[2025-06-17 13:47:31] Attempting to save data for IP: 172.55.50.83
+[2025-06-17 13:47:31] Attempting to save data for IP: 172.55.51.222
+[2025-06-17 13:47:31] Binding parameters for IP: 172.55.50.83
+[2025-06-17 13:47:31] Binding parameters for IP: 172.55.51.222
+[2025-06-17 13:47:31] Successfully saved data for IP: 172.55.50.83
+[2025-06-17 13:47:31] Successfully saved data for IP: 172.55.51.222
+[2025-06-17 13:47:36] Attempting to save data for IP: 10.109.8.5
+[2025-06-17 13:47:36] Binding parameters for IP: 10.109.8.5
+[2025-06-17 13:47:36] Successfully saved data for IP: 10.109.8.5
+[2025-06-17 13:48:16] Attempting to save data for IP: 172.55.50.25
+[2025-06-17 13:48:16] Binding parameters for IP: 172.55.50.25
+[2025-06-17 13:48:16] Successfully saved data for IP: 172.55.50.25
+[2025-06-17 13:48:17] Attempting to save data for IP: 10.236.212.171
+[2025-06-17 13:48:17] Attempting to save data for IP: 10.109.11.9
+[2025-06-17 13:48:17] Binding parameters for IP: 172.55.50.89
+[2025-06-17 13:48:17] Binding parameters for IP: 10.109.11.9
+[2025-06-17 13:48:17] Successfully saved data for IP: 172.55.50.89
+[2025-06-17 13:48:17] Successfully saved data for IP: 10.109.11.9
+[2025-06-17 13:48:17] Successfully saved data for IP: 10.236.212.171
+[2025-06-17 13:48:20] Attempting to save data for IP: 10.185.182.248
+[2025-06-17 13:48:20] Binding parameters for IP: 10.185.182.248
+[2025-06-17 13:48:20] Successfully saved data for IP: 10.185.182.248
+[2025-06-17 13:48:21] Attempting to save data for IP: 10.126.36.214
+[2025-06-17 13:48:21] Binding parameters for IP: 10.126.36.214
+[2025-06-17 13:48:21] Successfully saved data for IP: 10.126.36.214
+[2025-06-17 13:48:25] Attempting to save data for IP: 10.126.36.243
+[2025-06-17 13:48:25] Binding parameters for IP: 10.126.36.243
+[2025-06-17 13:48:25] Successfully saved data for IP: 10.126.36.243
+[2025-06-17 13:48:25] Attempting to save data for IP: 10.126.36.222
+[2025-06-17 13:48:25] Binding parameters for IP: 10.126.36.222
+[2025-06-17 13:48:25] Successfully saved data for IP: 10.126.36.222
+[2025-06-17 13:48:26] Attempting to save data for IP: 10.126.36.219
+[2025-06-17 13:48:26] Binding parameters for IP: 10.126.36.219
+[2025-06-17 13:48:26] Successfully saved data for IP: 10.126.36.219
+[2025-06-17 13:48:26] Attempting to save data for IP: 10.126.36.218
+[2025-06-17 13:48:26] Binding parameters for IP: 10.126.36.218
+[2025-06-17 13:48:26] Successfully saved data for IP: 10.126.36.218
+[2025-06-17 13:49:21] Attempting to save data for IP: 172.55.50.107
+[2025-06-17 13:49:21] Binding parameters for IP: 172.55.50.107
+[2025-06-17 13:49:21] Successfully saved data for IP: 172.55.50.107
+[2025-08-26 12:10:42] Attempting to save data for IP: 172.55.50.6
+[2025-08-26 12:10:42] Exception while saving data: Access denied for user 'root'@'localhost' (using password: NO)
+[2025-08-26 12:10:42] Error in log_dvr_activity for IP 172.55.50.6: Access denied for user 'root'@'localhost' (using password: NO)
+[2025-08-26 12:12:15] Attempting to save data for IP: 172.55.50.6
+[2025-08-26 12:12:15] Exception while saving data: Access denied for user 'root'@'localhost' (using password: NO)
+[2025-08-26 12:12:15] Error in log_dvr_activity for IP 172.55.50.6: Access denied for user 'root'@'localhost' (using password: NO)
+[2025-08-26 12:21:22] Attempting to save data for IP: 10.137.0.34
+[2025-08-26 12:21:22] Binding parameters for IP: 10.137.0.34
+[2025-08-26 12:21:22] Successfully saved data for IP: 10.137.0.34
+[2025-08-26 12:21:22] Attempting to save data for IP: 172.55.50.76
+[2025-08-26 12:21:22] Binding parameters for IP: 172.55.50.76
+[2025-08-26 12:21:22] Successfully saved data for IP: 172.55.50.76
+[2025-08-26 12:21:22] Attempting to save data for IP: 10.109.9.151
+[2025-08-26 12:21:22] Binding parameters for IP: 10.109.9.151
+[2025-08-26 12:21:22] Successfully saved data for IP: 10.109.9.151
+[2025-08-26 12:21:26] Attempting to save data for IP: 172.55.50.6
+[2025-08-26 12:21:26] Binding parameters for IP: 172.55.50.6
+[2025-08-26 12:21:26] Successfully saved data for IP: 172.55.50.6
+[2025-08-26 12:21:32] Attempting to save data for IP: 10.126.36.245
+[2025-08-26 12:21:32] Binding parameters for IP: 10.126.36.245
+[2025-08-26 12:21:32] Successfully saved data for IP: 10.126.36.245
+[2025-08-26 12:21:33] Attempting to save data for IP: 172.55.51.222
+[2025-08-26 12:21:33] Binding parameters for IP: 172.55.51.222
+[2025-08-26 12:21:33] Attempting to save data for IP: 172.55.50.83
+[2025-08-26 12:21:33] Successfully saved data for IP: 172.55.51.222
+[2025-08-26 12:21:33] Binding parameters for IP: 172.55.50.83
+[2025-08-26 12:21:33] Attempting to save data for IP: 172.55.50.20
+[2025-08-26 12:21:33] Successfully saved data for IP: 172.55.50.83
+[2025-08-26 12:21:33] Binding parameters for IP: 172.55.50.20
+[2025-08-26 12:21:33] Successfully saved data for IP: 172.55.50.20
+[2025-08-26 12:21:41] Attempting to save data for IP: 10.109.8.5
+[2025-08-26 12:21:41] Binding parameters for IP: 10.109.8.5
+[2025-08-26 12:21:41] Successfully saved data for IP: 10.109.8.5
+[2025-08-26 12:21:56] Attempting to save data for IP: 172.55.50.25
+[2025-08-26 12:21:56] Binding parameters for IP: 172.55.50.25
+[2025-08-26 12:21:56] Successfully saved data for IP: 172.55.50.25
+[2025-08-26 12:21:57] Attempting to save data for IP: 10.236.212.171
+[2025-08-26 12:21:57] Attempting to save data for IP: 10.109.11.9
+[2025-08-26 12:21:57] Binding parameters for IP: 10.236.212.171
+[2025-08-26 12:21:57] Successfully saved data for IP: 10.236.212.171
+[2025-08-26 12:21:57] Binding parameters for IP: 10.109.11.9
+[2025-08-26 12:21:57] Successfully saved data for IP: 10.109.11.9
+[2025-08-26 12:22:04] Attempting to save data for IP: 10.126.36.214
+[2025-08-26 12:22:04] Binding parameters for IP: 10.126.36.214
+[2025-08-26 12:22:04] Successfully saved data for IP: 10.126.36.214
+[2025-08-26 12:22:05] Attempting to save data for IP: 10.185.182.248
+[2025-08-26 12:22:05] Binding parameters for IP: 10.185.182.248
+[2025-08-26 12:22:05] Successfully saved data for IP: 10.185.182.248
+[2025-08-26 12:28:47] Attempting to save data for IP: 10.109.9.151[2025-08-26 12:28:47] Attempting to save data for IP: 10.126.36.245
+[2025-08-26 12:28:47] Attempting to save data for IP: 172.55.50.76
+[2025-08-26 12:28:47] Binding parameters for IP: 10.137.0.34
+[2025-08-26 12:28:47] Successfully saved data for IP: 10.137.0.34
+[2025-08-26 12:28:47] Binding parameters for IP: 172.55.50.76
+
+[2025-08-26 12:28:47] Binding parameters for IP: 10.109.9.151
+[2025-08-26 12:28:47] Successfully saved data for IP: 10.126.36.245
+[2025-08-26 12:28:47] Successfully saved data for IP: 172.55.50.76
+[2025-08-26 12:28:47] Successfully saved data for IP: 10.109.9.151
+[2025-08-26 12:31:54] Attempting to save data for IP: 10.109.9.151
+[2025-08-26 12:31:54] Attempting to save data for IP: 172.55.50.76
+[2025-08-26 12:31:54] Attempting to save data for IP: 10.137.0.34
+[2025-08-26 12:31:54] Binding parameters for IP: 10.109.9.151
+[2025-08-26 12:31:54] Successfully saved data for IP: 10.109.9.151
+[2025-08-26 12:31:54] Binding parameters for IP: 172.55.50.76
+[2025-08-26 12:31:54] Successfully saved data for IP: 172.55.50.76
+[2025-08-26 12:31:54] Binding parameters for IP: 10.137.0.34
+[2025-08-26 12:31:54] Successfully saved data for IP: 10.137.0.34
+[2025-08-26 12:31:56] Attempting to save data for IP: 172.55.50.6
+[2025-08-26 12:31:56] Binding parameters for IP: 172.55.50.6
+[2025-08-26 12:31:56] Successfully saved data for IP: 172.55.50.6
+[2025-08-26 12:32:02] Attempting to save data for IP: 10.126.36.245
+[2025-08-26 12:32:02] Binding parameters for IP: 10.126.36.245
+[2025-08-26 12:32:02] Successfully saved data for IP: 10.126.36.245
+[2025-08-26 12:32:03] Attempting to save data for IP: 172.55.50.20
+
+[2025-08-26 12:32:03] Binding parameters for IP: 172.55.50.83
+[2025-08-26 12:32:03] Successfully saved data for IP: 172.55.50.83
+[2025-08-26 12:32:03] Binding parameters for IP: 172.55.51.222
+[2025-08-26 12:32:03] Binding parameters for IP: 172.55.50.20
+[2025-08-26 12:32:03] Successfully saved data for IP: 172.55.51.222
+[2025-08-26 12:32:03] Successfully saved data for IP: 172.55.50.20
+[2025-08-26 12:32:12] Attempting to save data for IP: 10.109.8.5
+[2025-08-26 12:32:12] Binding parameters for IP: 10.109.8.5
+[2025-08-26 12:32:12] Successfully saved data for IP: 10.109.8.5
