@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DVR Real-time Monitoring Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        .online {
+            color: #4CAF50;
+        }
+
+        .offline {
+            color: #f44336;
+        }
+
+        .unknown {
+            color: #ff9800;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .controls-left {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .controls-right {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+        }
+
+        .btn-warning:hover {
+            background: #f57c00;
+        }
+
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            width: 200px;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-online {
+            background: #e8f5e8;
+            color: #4CAF50;
+        }
+
+        .status-offline {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        .status-unknown {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .pagination {
+            padding: 20px;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            border-top: 1px solid #eee;
+        }
+
+        .pagination-info {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .page-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .performance-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .connected {
+            background: #4CAF50;
+        }
+
+        .disconnected {
+            background: #f44336;
+        }
+
+        .refreshing {
+            background: #ff9800;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .response-time {
+            font-family: monospace;
+        }
+
+        .ip-address {
+            font-family: monospace;
+            color: #666;
+        }
+
+        .timestamp {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .filter-status {
+            margin-left: 10px;
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="connection-status" id="connectionStatus">Connecting...</div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🚀 High-Performance DVR Monitoring Dashboard</h1>
+            <p>Real-time monitoring with tabular view, pagination, and export functionality</p>
+        </div>
+
+        <div class="performance-info">
+            <h3>🤖 Automated Monitoring Status</h3>
+            <div id="automatedStatus">Loading automated monitoring status...</div>
+        </div>
+
+        <div class="performance-info">
+            <h3>📊 Performance Metrics</h3>
+            <div id="performanceMetrics">Loading performance data...</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalDvrs">-</div>
+                <div class="stat-label">Total DVRs</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value online" id="onlineDvrs">-</div>
+                <div class="stat-label">Online</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value offline" id="offlineDvrs">-</div>
+                <div class="stat-label">Offline</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value unknown" id="unknownDvrs">-</div>
+                <div class="stat-label">Unknown</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="avgResponseTime">-</div>
+                <div class="stat-label">Avg Response (ms)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="lastUpdate">-</div>
+                <div class="stat-label">Last Update</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="controls-left">
+                <button class="btn" onclick="toggleAutomatedMonitoring()" id="automatedBtn">🤖 Start Automated
+                    Monitoring</button>
+                <button class="btn" onclick="triggerMonitoring()">🚀 Manual Scan</button>
+                <button class="btn" onclick="refreshData()">🔄 Refresh Data</button>
+                <button class="btn" onclick="toggleAutoRefresh()" id="autoRefreshBtn">⏰ Enable Real-time (3s)</button>
+            </div>
+            <div class="controls-right">
+                <input type="text" class="search-box" id="searchBox" placeholder="Search DVRs..."
+                    onkeyup="filterTable()">
+                <select class="filter-status" id="statusFilter" onchange="filterTable()">
+                    <option value="">All Status</option>
+                    <option value="online">Online</option>
+                    <option value="offline">Offline</option>
+                    <option value="unknown">Unknown</option>
+                </select>
+                <span id="scanStatus"></span>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="table-header">
+                <div class="table-title">DVR Monitoring Status</div>
+                <div class="table-actions">
+                    <button class="btn btn-success" onclick="exportToCSV()">📊 Export CSV</button>
+                    <button class="btn btn-warning" onclick="exportToJSON()">📄 Export JSON</button>
+                </div>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="dvrTable">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTable(0)">DVR Name ↕</th>
+                            <th onclick="sortTable(1)">IP Address ↕</th>
+                            <th onclick="sortTable(2)">Port ↕</th>
+                            <th onclick="sortTable(3)">Status ↕</th>
+                            <th onclick="sortTable(4)">Response Time ↕</th>
+                            <th onclick="sortTable(5)">API Access ↕</th>
+                            <th onclick="sortTable(6)">Active ↕</th>
+                            <th onclick="sortTable(7)">Last Ping ↕</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dvrTableBody">
+                        <tr>
+                            <td colspan="8" class="loading">Loading DVR data...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <div class="pagination-info" id="paginationInfo">
+                    Showing 0 - 0 of 0 entries
+                </div>
+                <div class="pagination-controls" id="paginationControls">
+                    <!-- Pagination buttons will be generated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let autoRefreshInterval = null;
+        let isAutoRefresh = false;
+        let allDvrs = [];
+        let filteredDvrs = [];
+        let currentPage = 1;
+        let itemsPerPage = 25;
+        let sortColumn = 0;
+        let sortDirection = 'asc';
+        let paginationData = null;
+
+        // API Base URL
+        const API_BASE = window.location.origin + '/api';
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function () {
+            refreshData();
+            loadPerformanceMetrics();
+            loadAutomatedMonitoringStatus();
+
+            // Auto-enable real-time refresh
+            setTimeout(() => {
+                toggleAutoRefresh();
+            }, 1000); // Start auto-refresh after 1 second
+        });
+
+        async function refreshData() {
+            try {
+                // Show loading indicator
+                const connectionStatus = document.getElementById('connectionStatus');
+                const originalText = connectionStatus.textContent;
+                const originalClass = connectionStatus.className;
+
+                if (isAutoRefresh) {
+                    connectionStatus.textContent = 'Refreshing...';
+                    connectionStatus.className = 'connection-status refreshing';
+                }
+
+                // Load stats (now cached and fast)
+                const statsResponse = await fetch(`${API_BASE}/realtime/stats`);
+                const statsData = await statsResponse.json();
+
+                if (statsData.success) {
+                    updateStats(statsData.stats);
+                }
+
+                // Load DVR data with pagination (much faster)
+                await loadDvrData();
+
+                // Update connection status
+                connectionStatus.textContent = 'Connected';
+                connectionStatus.className = 'connection-status connected';
+
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+                document.getElementById('connectionStatus').textContent = 'API Error';
+                document.getElementById('connectionStatus').className = 'connection-status disconnected';
+            }
+        }
+
+        async function loadDvrData() {
+            try {
+                const searchTerm = document.getElementById('searchBox').value;
+                const statusFilter = document.getElementById('statusFilter').value;
+
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    per_page: itemsPerPage,
+                    sort_by: ['dvr_name', 'ip', 'port', 'status', 'ping_response_time', 'api_accessible', 'is_active', 'last_ping_at'][sortColumn] || 'dvr_name',
+                    sort_direction: sortDirection
+                });
+
+                if (searchTerm) params.append('search', searchTerm);
+                if (statusFilter) params.append('status', statusFilter);
+
+                const response = await fetch(`${API_BASE}/realtime/dvrs?${params}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    allDvrs = data.data;
+                    filteredDvrs = [...allDvrs];
+                    paginationData = data.pagination;
+                    updateTableFromPaginated();
+                }
+
+            } catch (error) {
+                console.error('Error loading DVR data:', error);
+                const tbody = document.getElementById('dvrTableBody');
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">Error loading DVR data</td></tr>';
+            }
+        }
+
+        async function triggerMonitoring() {
+            const btn = event.target;
+            const status = document.getElementById('scanStatus');
+
+            btn.disabled = true;
+            btn.textContent = '🔄 Scanning...';
+            status.textContent = 'Starting high-performance monitoring...';
+
+            try {
+                const response = await fetch(`${API_BASE}/realtime/trigger`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ active_only: true })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    status.textContent = `✅ Monitoring started! Processing ${data.data.total_dvrs} DVRs...`;
+
+                    // Refresh data after a delay to see results
+                    setTimeout(() => {
+                        refreshData();
+                        status.textContent = '';
+                    }, 5000);
+                } else {
+                    status.textContent = `❌ Error: ${data.message}`;
+                }
+
+            } catch (error) {
+                status.textContent = `❌ Network error: ${error.message}`;
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🚀 Start High-Performance Scan';
+            }
+        }
+
+        async function loadPerformanceMetrics() {
+            try {
+                const response = await fetch(`${API_BASE}/realtime/metrics`);
+                const data = await response.json();
+
+                if (data.success && data.metrics) {
+                    const metrics = data.metrics;
+                    document.getElementById('performanceMetrics').innerHTML = `
+                        <strong>Last Hour:</strong> 
+                        ${metrics.total_checks || 0} checks, 
+                        Avg: ${Math.round(metrics.avg_response_time || 0)}ms, 
+                        Range: ${Math.round(metrics.min_response_time || 0)}-${Math.round(metrics.max_response_time || 0)}ms, 
+                        Success Rate: ${metrics.total_checks ? Math.round((metrics.online_count / metrics.total_checks) * 100) : 0}%
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading performance metrics:', error);
+            }
+        }
+
+        function updateStats(stats) {
+            console.log('updateStats called with:', stats);
+            document.getElementById('totalDvrs').textContent = stats.total_dvrs || 0;
+            document.getElementById('onlineDvrs').textContent = stats.online_dvrs || 0;
+            document.getElementById('offlineDvrs').textContent = stats.offline_dvrs || 0;
+            document.getElementById('unknownDvrs').textContent = stats.unknown_dvrs || 0;
+            document.getElementById('avgResponseTime').textContent =
+                stats.avg_response_time ? Math.round(stats.avg_response_time) + 'ms' : '-';
+
+            const lastUpdate = stats.last_update ?
+                new Date(stats.last_update).toLocaleTimeString() : 'Never';
+            document.getElementById('lastUpdate').textContent = lastUpdate;
+        }
+
+        function updateTable() {
+            loadDvrData();
+        }
+
+        function updateTableFromPaginated() {
+            const tbody = document.getElementById('dvrTableBody');
+
+            if (!filteredDvrs || filteredDvrs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No DVR data available</td></tr>';
+                updatePaginationFromServer();
+                return;
+            }
+
+            tbody.innerHTML = filteredDvrs.map(dvr => `
+                <tr>
+                    <td><strong>${dvr.dvr_name || 'N/A'}</strong></td>
+                    <td class="ip-address">${dvr.ip || 'N/A'}</td>
+                    <td>${dvr.port || 'N/A'}</td>
+                    <td>
+                        <span class="status-badge status-${dvr.status || 'unknown'}">
+                            ${(dvr.status || 'unknown').toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="response-time">${dvr.ping_response_time ? dvr.ping_response_time + 'ms' : 'N/A'}</td>
+                    <td>${dvr.api_accessible ? '✅ Yes' : '❌ No'}</td>
+                    <td>${dvr.is_active ? '✅ Yes' : '❌ No'}</td>
+                    <td class="timestamp">${dvr.last_ping_at ?
+                    (() => {
+                        // Parse as UTC and display in IST
+                        const utcDate = new Date(dvr.last_ping_at + 'Z');
+                        return utcDate.toLocaleString('en-IN', {
+                            timeZone: 'Asia/Kolkata',
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit'
+                        });
+                    })() : 'Never'}</td>
+                </tr>
+            `).join('');
+
+            updatePaginationFromServer();
+        }
+
+        function updatePaginationFromServer() {
+            if (!paginationData) return;
+
+            // Update info
+            document.getElementById('paginationInfo').textContent =
+                `Showing ${paginationData.from || 0} - ${paginationData.to || 0} of ${paginationData.total} entries`;
+
+            // Update controls
+            const controls = document.getElementById('paginationControls');
+            let html = '';
+
+            // Previous button
+            html += `<button class="page-btn" ${paginationData.current_page === 1 ? 'disabled' : ''} onclick="changePage(${paginationData.current_page - 1})">‹ Previous</button>`;
+
+            // Page numbers
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, paginationData.current_page - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(paginationData.last_page, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === paginationData.current_page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+
+            // Next button
+            html += `<button class="page-btn" ${paginationData.current_page === paginationData.last_page || paginationData.last_page === 0 ? 'disabled' : ''} onclick="changePage(${paginationData.current_page + 1})">Next ›</button>`;
+
+            controls.innerHTML = html;
+        }
+
+        function changePage(page) {
+            if (paginationData && page >= 1 && page <= paginationData.last_page) {
+                currentPage = page;
+                loadDvrData();
+            }
+        }
+
+        function filterTable() {
+            currentPage = 1;
+            loadDvrData();
+        }
+
+        function sortTable(columnIndex) {
+            if (sortColumn === columnIndex) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = columnIndex;
+                sortDirection = 'asc';
+            }
+
+            currentPage = 1;
+            loadDvrData();
+        }
+
+        async function exportToCSV() {
+            const exportBtn = event.target;
+            const originalText = exportBtn.textContent;
+
+            try {
+                exportBtn.disabled = true;
+                exportBtn.textContent = '⏳ Exporting...';
+
+                // Get all filtered data for export
+                const searchTerm = document.getElementById('searchBox').value;
+                const statusFilter = document.getElementById('statusFilter').value;
+
+                const params = new URLSearchParams({
+                    per_page: 10000, // Get all data for export
+                    sort_by: ['dvr_name', 'ip', 'port', 'status', 'ping_response_time', 'api_accessible', 'is_active', 'last_ping_at'][sortColumn] || 'dvr_name',
+                    sort_direction: sortDirection
+                });
+
+                if (searchTerm) params.append('search', searchTerm);
+                if (statusFilter) params.append('status', statusFilter);
+
+                const response = await fetch(`${API_BASE}/realtime/dvrs?${params}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    const headers = ['DVR Name', 'IP Address', 'Port', 'Status', 'Response Time (ms)', 'API Access', 'Active', 'Last Ping'];
+                    const csvContent = [
+                        headers.join(','),
+                        ...data.data.map(dvr => [
+                            `"${dvr.dvr_name || 'N/A'}"`,
+                            `"${dvr.ip || 'N/A'}"`,
+                            dvr.port || 'N/A',
+                            `"${dvr.status || 'unknown'}"`,
+                            dvr.ping_response_time || 'N/A',
+                            dvr.api_accessible ? 'Yes' : 'No',
+                            dvr.is_active ? 'Yes' : 'No',
+                            `"${dvr.last_ping_at ? (() => {
+                                const utcDate = new Date(dvr.last_ping_at + 'Z');
+                                return utcDate.toLocaleString('en-IN', {
+                                    timeZone: 'Asia/Kolkata',
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    second: '2-digit'
+                                });
+                            })() : 'Never'}"`
+                        ].join(','))
+                    ].join('\n');
+
+                    downloadFile(csvContent, `dvr-monitoring-${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+
+                    // Show success message
+                    exportBtn.textContent = '✅ Exported!';
+                    setTimeout(() => {
+                        exportBtn.textContent = originalText;
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'No data received from server');
+                }
+            } catch (error) {
+                console.error('CSV Export failed:', error);
+                alert(`CSV Export failed: ${error.message}\n\nPlease try again or contact support.`);
+                exportBtn.textContent = originalText;
+            } finally {
+                exportBtn.disabled = false;
+            }
+        }
+
+        async function exportToJSON() {
+            const exportBtn = event.target;
+            const originalText = exportBtn.textContent;
+
+            try {
+                exportBtn.disabled = true;
+                exportBtn.textContent = '⏳ Exporting...';
+
+                // Get all filtered data for export
+                const searchTerm = document.getElementById('searchBox').value;
+                const statusFilter = document.getElementById('statusFilter').value;
+
+                const params = new URLSearchParams({
+                    per_page: 10000, // Get all data for export
+                    sort_by: ['dvr_name', 'ip', 'port', 'status', 'ping_response_time', 'api_accessible', 'is_active', 'last_ping_at'][sortColumn] || 'dvr_name',
+                    sort_direction: sortDirection
+                });
+
+                if (searchTerm) params.append('search', searchTerm);
+                if (statusFilter) params.append('status', statusFilter);
+
+                const response = await fetch(`${API_BASE}/realtime/dvrs?${params}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success && data.data) {
+                    const exportData = {
+                        exported_at: new Date().toISOString(),
+                        total_records: data.data.length,
+                        filters_applied: {
+                            search: searchTerm || null,
+                            status: statusFilter || null,
+                            sort_by: ['dvr_name', 'ip', 'port', 'status', 'ping_response_time', 'api_accessible', 'is_active', 'last_ping_at'][sortColumn] || 'dvr_name',
+                            sort_direction: sortDirection
+                        },
+                        data: data.data
+                    };
+
+                    const jsonContent = JSON.stringify(exportData, null, 2);
+                    downloadFile(jsonContent, `dvr-monitoring-${new Date().toISOString().split('T')[0]}.json`, 'application/json');
+
+                    // Show success message
+                    exportBtn.textContent = '✅ Exported!';
+                    setTimeout(() => {
+                        exportBtn.textContent = originalText;
+                    }, 2000);
+                } else {
+                    throw new Error(data.message || 'No data received from server');
+                }
+            } catch (error) {
+                console.error('JSON Export failed:', error);
+                alert(`JSON Export failed: ${error.message}\n\nPlease try again or contact support.`);
+                exportBtn.textContent = originalText;
+            } finally {
+                exportBtn.disabled = false;
+            }
+        }
+
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function toggleAutoRefresh() {
+            const btn = document.getElementById('autoRefreshBtn');
+
+            if (isAutoRefresh) {
+                clearInterval(autoRefreshInterval);
+                btn.textContent = '⏰ Enable Real-time (3s)';
+                btn.style.background = '#667eea';
+                isAutoRefresh = false;
+            } else {
+                autoRefreshInterval = setInterval(refreshData, 3000); // 3 seconds for real-time feel
+                btn.textContent = '⏸️ Real-time ON (3s)';
+                btn.style.background = '#4CAF50';
+                isAutoRefresh = true;
+            }
+        }
+
+        // Automated Monitoring Functions
+        async function loadAutomatedMonitoringStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/automated-monitoring/status`);
+                const data = await response.json();
+
+                if (data.success) {
+                    updateAutomatedStatus(data);
+                }
+            } catch (error) {
+                console.error('Error loading automated monitoring status:', error);
+                document.getElementById('automatedStatus').innerHTML = '❌ Failed to load automated monitoring status';
+            }
+        }
+
+        function updateAutomatedStatus(data) {
+            const status = data.service_status;
+            const stats = data.dvr_statistics;
+
+            const isActive = status.active;
+            const btn = document.getElementById('automatedBtn');
+
+            if (isActive) {
+                btn.textContent = '⏹️ Stop Automated Monitoring';
+                btn.className = 'btn btn-warning';
+            } else {
+                btn.textContent = '🤖 Start Automated Monitoring';
+                btn.className = 'btn';
+            }
+
+            document.getElementById('automatedStatus').innerHTML = `
+                <strong>Service:</strong> ${isActive ? '🟢 Active' : '🔴 Inactive'} | 
+                <strong>Queue:</strong> ${status.pending_jobs || 0} pending, ${status.failed_jobs || 0} failed | 
+                <strong>Last Cycle:</strong> ${status.last_cycle ? (() => {
+                    const utcDate = new Date(status.last_cycle);
+                    return utcDate.toLocaleString('en-IN', {
+                        timeZone: 'Asia/Kolkata',
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    });
+                })() : 'Never'} |
+                <strong>Active DVRs:</strong> ${stats.active_dvrs}/${stats.total_dvrs}
+            `;
+        }
+
+        async function toggleAutomatedMonitoring() {
+            const btn = document.getElementById('automatedBtn');
+            const originalText = btn.textContent;
+
+            try {
+                btn.disabled = true;
+                btn.textContent = '⏳ Processing...';
+
+                // Check current status first
+                const statusResponse = await fetch(`${API_BASE}/automated-monitoring/status`);
+                const statusData = await statusResponse.json();
+
+                const isCurrentlyActive = statusData.success && statusData.service_status.active;
+                const endpoint = isCurrentlyActive ? 'stop' : 'start';
+
+                const response = await fetch(`${API_BASE}/automated-monitoring/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Refresh status after successful toggle
+                    setTimeout(() => {
+                        loadAutomatedMonitoringStatus();
+                    }, 1000);
+                } else {
+                    alert(`Failed to ${endpoint} automated monitoring: ${data.message}`);
+                }
+
+            } catch (error) {
+                console.error('Error toggling automated monitoring:', error);
+                alert(`Error: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        // Table rendering function
+        function updateTableFromPaginated() {
+            const tbody = document.getElementById('dvrTableBody');
+
+            if (!allDvrs || allDvrs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No DVR data available</td></tr>';
+                updatePaginationFromServer();
+                return;
+            }
+
+            const rows = allDvrs.map(dvr => {
+                const statusClass = dvr.status === 'online' ? 'status-online' :
+                    dvr.status === 'offline' ? 'status-offline' : 'status-unknown';
+
+                // Convert UTC timestamp to IST for display
+                let lastPingDisplay = 'Never';
+                if (dvr.last_ping_at) {
+                    try {
+                        const utcDate = new Date(dvr.last_ping_at);
+                        // Convert to IST (UTC+5:30)
+                        const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+                        lastPingDisplay = istDate.toLocaleString('en-IN', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false
+                        });
+                    } catch (e) {
+                        lastPingDisplay = 'Invalid Date';
+                    }
+                }
+
+                return `
+                    <tr>
+                        <td>${dvr.dvr_name || 'N/A'}</td>
+                        <td class="ip-address">${dvr.ip || 'N/A'}</td>
+                        <td>${dvr.port || 'N/A'}</td>
+                        <td><span class="status-badge ${statusClass}">${dvr.status || 'unknown'}</span></td>
+                        <td class="response-time">${dvr.ping_response_time ? dvr.ping_response_time + 'ms' : 'N/A'}</td>
+                        <td>${dvr.api_accessible ? '✅ Yes' : '❌ No'}</td>
+                        <td>${dvr.is_active ? '✅ Active' : '❌ Inactive'}</td>
+                        <td class="timestamp">${lastPingDisplay}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            tbody.innerHTML = rows;
+            updatePaginationFromServer();
+        }
+
+        function updatePaginationFromServer() {
+            if (!paginationData) return;
+
+            // Update info
+            document.getElementById('paginationInfo').textContent =
+                `Showing ${paginationData.from || 0} - ${paginationData.to || 0} of ${paginationData.total} entries`;
+
+            // Update controls
+            const controls = document.getElementById('paginationControls');
+            let html = '';
+
+            // Previous button
+            html += `<button class="page-btn" ${paginationData.current_page === 1 ? 'disabled' : ''} onclick="changePage(${paginationData.current_page - 1})">‹ Previous</button>`;
+
+            // Page numbers
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, paginationData.current_page - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(paginationData.last_page, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage < maxVisiblePages - 1) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="page-btn ${i === paginationData.current_page ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
+            }
+
+            // Next button
+            html += `<button class="page-btn" ${paginationData.current_page === paginationData.last_page || paginationData.last_page === 0 ? 'disabled' : ''} onclick="changePage(${paginationData.current_page + 1})">Next ›</button>`;
+
+            controls.innerHTML = html;
+        }
+
+        function changePage(page) {
+            if (paginationData && page >= 1 && page <= paginationData.last_page) {
+                currentPage = page;
+                loadDvrData();
+            }
+        }
+
+
+
+        async function toggleAutomatedMonitoring() {
+            const btn = document.getElementById('automatedBtn');
+            const originalText = btn.textContent;
+
+            try {
+                btn.disabled = true;
+                btn.textContent = '⏳ Processing...';
+
+                // Check current status first
+                const statusResponse = await fetch(`${API_BASE}/automated-monitoring/status`);
+                const statusData = await statusResponse.json();
+
+                const isCurrentlyActive = statusData.success && statusData.service_status.active;
+                const endpoint = isCurrentlyActive ? 'stop' : 'start';
+
+                const response = await fetch(`${API_BASE}/automated-monitoring/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Show success message
+                    const action = isCurrentlyActive ? 'stopped' : 'started';
+                    alert(`✅ Automated monitoring ${action} successfully!\n\n${data.message}`);
+
+                    // Refresh status
+                    loadAutomatedMonitoringStatus();
+                    refreshData();
+                } else {
+                    alert(`❌ Failed to ${isCurrentlyActive ? 'stop' : 'start'} automated monitoring:\n\n${data.message}`);
+                }
+
+            } catch (error) {
+                console.error('Error toggling automated monitoring:', error);
+                alert(`❌ Network error: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        // Complete the toggleAutomatedMonitoring function
+        async function toggleAutomatedMonitoring() {
+            const btn = document.getElementById('automatedBtn');
+            const originalText = btn.textContent;
+
+            try {
+                btn.disabled = true;
+                btn.textContent = '⏳ Processing...';
+
+                // Check current status first
+                const statusResponse = await fetch(`${API_BASE}/automated-monitoring/status`);
+                const statusData = await statusResponse.json();
+
+                const isCurrentlyActive = statusData.success && statusData.service_status.active;
+
+                const endpoint = isCurrentlyActive ? 'stop' : 'start';
+                const response = await fetch(`${API_BASE}/automated-monitoring/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Refresh status after successful toggle
+                    setTimeout(() => {
+                        loadAutomatedMonitoringStatus();
+                    }, 1000);
+                } else {
+                    alert(`Failed to ${endpoint} automated monitoring: ${data.message}`);
+                }
+
+            } catch (error) {
+                console.error('Error toggling automated monitoring:', error);
+                alert(`Error: ${error.message}`);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = originalText;
+            }
+        }
+
+        // Table rendering function
+        function updateTableFromPaginated() {
+            const tbody = document.getElementById('dvrTableBody');
+
+            if (!allDvrs || allDvrs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="no-data">No DVR data available</td></tr>';
+                return;
+            }
+
+            const rows = allDvrs.map(dvr => {
+                const statusClass = dvr.status === 'online' ? 'status-online' :
+                    dvr.status === 'offline' ? 'status-offline' : 'status-unknown';
+
+                // Convert UTC timestamp to IST for display
+                let lastPingDisplay = 'Never';
+                if (dvr.last_ping_at) {
+                    try {
+                        const utcDate = new Date(dvr.last_ping_at);
+                        // Convert to IST (UTC+5:30)
+                        const istDate = new Date(utcDate.getTime() + (5.5 * 60 * 60 * 1000));
+                        lastPingDisplay = istDate.toLocaleString('en-IN', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            second: '2-digit',
+                            hour12: false
+                        });
+                    } catch (e) {
+                        lastPingDisplay = 'Invalid Date';
+                    }
+                }
+
+                return `
+                    <tr>
+                        <td>${dvr.dvr_name || 'N/A'}</td>
+                        <td class="ip-address">${dvr.ip || 'N/A'}</td>
+                        <td>${dvr.port || 'N/A'}</td>
+                        <td><span class="status-badge ${statusClass}">${dvr.status || 'unknown'}</span></td>
+                        <td class="response-time">${dvr.ping_response_time ? dvr.ping_response_time + 'ms' : 'N/A'}</td>
+                        <td>${dvr.api_accessible ? '✅ Yes' : '❌ No'}</td>
+                        <td>${dvr.is_active ? '✅ Active' : '❌ Inactive'}</td>
+                        <td class="timestamp">${lastPingDisplay}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            tbody.innerHTML = rows;
+            updatePaginationFromServer();
+        }
+
+
+    </script>
+</body>
+
+</html>

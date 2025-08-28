@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parallel Test Debug</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-card { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 8px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .loading { background: #fff3cd; color: #856404; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Parallel Test Debug</h1>
+    
+    <div>
+        <label>DVR IP: </label>
+        <input type="text" id="dvrIp" value="10.126.37.33" style="padding: 8px; margin: 0 10px;">
+        <button onclick="runParallelTest()">🚀 Run Parallel Test</button>
+    </div>
+
+    <div id="results"></div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+
+        async function runParallelTest() {
+            const ip = document.getElementById('dvrIp').value.trim();
+            const resultsDiv = document.getElementById('results');
+            
+            if (!ip) {
+                alert('Please enter an IP address');
+                return;
+            }
+
+            // Show loading state
+            resultsDiv.innerHTML = `
+                <div class="test-card loading">🔄 Running parallel tests...</div>
+                <div class="test-card loading">📡 Basic DVR Test - Starting...</div>
+                <div class="test-card loading">📹 Camera Test - Starting...</div>
+                <div class="test-card loading">📸 Media Test - Starting...</div>
+            `;
+
+            console.log('🚀 Starting parallel tests for:', ip);
+            const startTime = Date.now();
+
+            try {
+                // Simple parallel execution without aggressive timeouts
+                const [basicResult, cameraResult, mediaResult] = await Promise.allSettled([
+                    testBasicDvr(ip),
+                    testCameraStatus(ip),
+                    testMediaServices(ip)
+                ]);
+
+                const endTime = Date.now();
+                const totalTime = ((endTime - startTime) / 1000).toFixed(2);
+
+                console.log('✅ All tests completed in', totalTime, 'seconds');
+
+                // Display results
+                let html = `<div class="test-card success">✅ All tests completed in ${totalTime} seconds</div>`;
+                
+                html += formatResult('📡 Basic DVR Test', basicResult);
+                html += formatResult('📹 Camera Test', cameraResult);
+                html += formatResult('📸 Media Test', mediaResult);
+
+                resultsDiv.innerHTML = html;
+
+            } catch (error) {
+                console.error('❌ Test error:', error);
+                resultsDiv.innerHTML = `<div class="test-card error">❌ Test failed: ${error.message}</div>`;
+            }
+        }
+
+        function formatResult(title, result) {
+            if (result.status === 'fulfilled') {
+                const data = result.value;
+                return `<div class="test-card success">${title}: ✅ ${data.message || 'Success'}</div>`;
+            } else {
+                return `<div class="test-card error">${title}: ❌ ${result.reason.message}</div>`;
+            }
+        }
+
+        async function testBasicDvr(ip) {
+            console.log('📡 Starting basic DVR test...');
+            const response = await fetch(`${API_BASE}/enhanced-monitoring/test-by-ip`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ip: ip })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('📡 Basic DVR test completed:', data.success);
+            
+            return { 
+                success: data.success, 
+                message: data.success ? 'DVR connection successful' : data.message 
+            };
+        }
+
+        async function testCameraStatus(ip) {
+            console.log('📹 Starting camera test...');
+            const response = await fetch(`${API_BASE}/enhanced-monitoring/test-by-ip`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ip: ip })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('📹 Camera test completed:', data.success);
+            
+            return { 
+                success: data.success, 
+                message: data.success ? `Found ${data.camera_status?.cameras?.total_cameras || 0} cameras` : data.message 
+            };
+        }
+
+        async function testMediaServices(ip) {
+            console.log('📸 Starting media test...');
+            const response = await fetch(`${API_BASE}/streaming/dvr/${ip}/snapshot`);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            const data = await response.json();
+            console.log('📸 Media test completed:', data.success);
+            
+            return { 
+                success: data.success, 
+                message: data.success ? 'Media services available' : data.message 
+            };
+        }
+    </script>
+</body>
+</html>

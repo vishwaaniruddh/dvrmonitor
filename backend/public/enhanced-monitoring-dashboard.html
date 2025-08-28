@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced DVR Monitoring Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+        }
+        .dvr-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .table-header {
+            background: #2196F3;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        .status-online { color: #4CAF50; }
+        .status-offline { color: #f44336; }
+        .status-api-error { color: #ff9800; }
+        .time-sync-ok { color: #4CAF50; }
+        .time-sync-issue { color: #f44336; }
+        .refresh-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .refresh-btn:hover {
+            background: #1976D2;
+        }
+        .history-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Enhanced DVR Monitoring Dashboard</h1>
+        
+        <button class="refresh-btn" onclick="loadDashboard()">🔄 Refresh Data</button>
+        
+        <div class="stats-grid" id="statsGrid">
+            <div class="loading">Loading statistics...</div>
+        </div>
+        
+        <div class="dvr-table">
+            <div class="table-header">📊 DVR Status Overview</div>
+            <div id="dvrTable" class="loading">Loading DVR data...</div>
+        </div>
+        
+        <div class="history-section">
+            <h3>📈 Recent Monitoring History</h3>
+            <div id="historyData" class="loading">Loading history...</div>
+        </div>
+    </div>
+
+    <script>
+        // API base URL
+        const API_BASE = '/api';
+        
+        // Load dashboard data
+        async function loadDashboard() {
+            try {
+                await Promise.all([
+                    loadStats(),
+                    loadDvrStatus(),
+                    loadHistory()
+                ]);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+            }
+        }
+        
+        // Load monitoring statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-monitoring/stats?hours=24`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.stats;
+                    document.getElementById('statsGrid').innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.total_checks}</div>
+                            <div class="stat-label">Total Checks (24h)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.successful_pings}</div>
+                            <div class="stat-label">Successful Pings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.successful_api_logins}</div>
+                            <div class="stat-label">API Logins</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.online_dvrs}</div>
+                            <div class="stat-label">Online DVRs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.offline_dvrs}</div>
+                            <div class="stat-label">Offline DVRs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.api_error_dvrs}</div>
+                            <div class="stat-label">API Errors</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('statsGrid').innerHTML = '<div class="loading">Error loading statistics</div>';
+            }
+        }
+        
+        // Load DVR status
+        async function loadDvrStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-monitoring/current-status`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const dvrs = data.dvrs;
+                    let tableHTML = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>DVR Name</th>
+                                    <th>IP:Port</th>
+                                    <th>Status</th>
+                                    <th>Response Time</th>
+                                    <th>API Status</th>
+                                    <th>DVR Time</th>
+                                    <th>Time Sync</th>
+                                    <th>Last Check</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    
+                    dvrs.forEach(dvr => {
+                        const statusClass = dvr.status === 'online' ? 'status-online' : 
+                                          dvr.status === 'api_error' ? 'status-api-error' : 'status-offline';
+                        
+                        const apiStatus = dvr.api_login_status === 'success' ? '✅ OK' : 
+                                        dvr.api_login_status === 'failed' ? '❌ Failed' : '⚪ Not Tested';
+                        
+                        const timeSync = dvr.device_time_offset_minutes !== null ? 
+                                       (Math.abs(dvr.device_time_offset_minutes) <= 5 ? 
+                                        `<span class="time-sync-ok">✅ Synced</span>` : 
+                                        `<span class="time-sync-issue">⚠️ ${dvr.device_time_offset_minutes}min</span>`) : 
+                                       '⚪ Unknown';
+                        
+                        tableHTML += `
+                            <tr>
+                                <td>${dvr.dvr_name}</td>
+                                <td>${dvr.ip}:${dvr.port}</td>
+                                <td class="${statusClass}">${dvr.status.toUpperCase()}</td>
+                                <td>${dvr.ping_response_time ? dvr.ping_response_time + 'ms' : 'N/A'}</td>
+                                <td>${apiStatus}</td>
+                                <td>${dvr.dvr_device_time ? new Date(dvr.dvr_device_time).toLocaleString() : 'N/A'}</td>
+                                <td>${timeSync}</td>
+                                <td>${dvr.last_ping_at ? new Date(dvr.last_ping_at).toLocaleString() : 'Never'}</td>
+                            </tr>
+                        `;
+                    });
+                    
+                    tableHTML += '</tbody></table>';
+                    document.getElementById('dvrTable').innerHTML = tableHTML;
+                }
+            } catch (error) {
+                document.getElementById('dvrTable').innerHTML = '<div class="loading">Error loading DVR data</div>';
+            }
+        }
+        
+        // Load monitoring history
+        async function loadHistory() {
+            try {
+                // Get first DVR for history example
+                const statusResponse = await fetch(`${API_BASE}/enhanced-monitoring/current-status`);
+                const statusData = await statusResponse.json();
+                
+                if (statusData.success && statusData.dvrs.length > 0) {
+                    const firstDvr = statusData.dvrs[0];
+                    const historyResponse = await fetch(`${API_BASE}/enhanced-monitoring/history/${firstDvr.id}?hours=24&limit=10`);
+                    const historyData = await historyResponse.json();
+                    
+                    if (historyData.success) {
+                        let historyHTML = `
+                            <h4>Recent checks for ${historyData.dvr.name} (${historyData.dvr.ip}:${historyData.dvr.port})</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Time</th>
+                                        <th>Check Type</th>
+                                        <th>Status</th>
+                                        <th>Ping</th>
+                                        <th>API</th>
+                                        <th>Response Time</th>
+                                        <th>Error</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        
+                        historyData.history.forEach(record => {
+                            const pingIcon = record.ping_success ? '✅' : '❌';
+                            const apiIcon = record.api_login_success ? '🔗' : '🚫';
+                            
+                            historyHTML += `
+                                <tr>
+                                    <td>${new Date(record.checked_at).toLocaleString()}</td>
+                                    <td>${record.check_type}</td>
+                                    <td class="status-${record.status}">${record.status.toUpperCase()}</td>
+                                    <td>${pingIcon}</td>
+                                    <td>${apiIcon}</td>
+                                    <td>${record.ping_response_time ? record.ping_response_time + 'ms' : 'N/A'}</td>
+                                    <td>${record.error_message || '-'}</td>
+                                </tr>
+                            `;
+                        });
+                        
+                        historyHTML += '</tbody></table>';
+                        document.getElementById('historyData').innerHTML = historyHTML;
+                    }
+                }
+            } catch (error) {
+                document.getElementById('historyData').innerHTML = '<div class="loading">Error loading history</div>';
+            }
+        }
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadDashboard, 30000);
+        
+        // Load dashboard on page load
+        loadDashboard();
+    </script>
+</body>
+</html>

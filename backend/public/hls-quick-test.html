@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Quick Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            text-align: left;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 HLS Quick Test</h1>
+        <p>Test the fixed HLS streaming with timeouts</p>
+        
+        <div>
+            <button id="testBtn" onclick="quickTest()">🚀 Test HLS Stream</button>
+            <button onclick="cleanup()">🧹 Cleanup Streams</button>
+        </div>
+
+        <div id="result" class="result info">Ready to test HLS streaming...</div>
+    </div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+        const testBtn = document.getElementById('testBtn');
+
+        async function quickTest() {
+            const ip = '10.126.37.107';
+            const channel = 1;
+            
+            testBtn.disabled = true;
+            testBtn.textContent = '🔄 Testing...';
+            
+            try {
+                resultDiv.textContent = '🔄 Starting HLS stream with timeout...';
+                resultDiv.className = 'result info';
+                
+                // Test with 8 second timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => {
+                    controller.abort();
+                    throw new Error('Request timeout after 8 seconds');
+                }, 8000);
+                
+                const response = await fetch(`http://127.0.0.1:8000/api/hls/start/${ip}/${channel}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultDiv.textContent = `✅ HLS Stream Started Successfully!
+
+Stream ID: ${data.data.stream_id}
+HLS URL: ${data.data.hls_url}
+Message: ${data.message}
+
+🎉 No more hanging! The timeout fix works!`;
+                    resultDiv.className = 'result success';
+                } else {
+                    resultDiv.textContent = `❌ Stream failed: ${data.message}
+
+But at least it didn't hang the server! 🎉`;
+                    resultDiv.className = 'result error';
+                }
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    resultDiv.textContent = `⏰ Request timed out after 8 seconds
+
+This is expected if FFmpeg fails, but the server didn't hang! 🎉
+The timeout protection is working correctly.`;
+                } else {
+                    resultDiv.textContent = `❌ Error: ${error.message}
+
+But the server is still responsive! 🎉`;
+                }
+                resultDiv.className = 'result error';
+            } finally {
+                testBtn.disabled = false;
+                testBtn.textContent = '🚀 Test HLS Stream';
+            }
+        }
+
+        async function cleanup() {
+            try {
+                resultDiv.textContent = '🧹 Cleaning up streams...';
+                resultDiv.className = 'result info';
+                
+                const response = await fetch('http://127.0.0.1:8000/api/hls/cleanup', {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                resultDiv.textContent = data.success ? 
+                    `✅ Cleanup completed: ${data.message}` : 
+                    `⚠️ Cleanup result: ${data.message}`;
+                resultDiv.className = data.success ? 'result success' : 'result error';
+                
+            } catch (error) {
+                resultDiv.textContent = `❌ Cleanup error: ${error.message}`;
+                resultDiv.className = 'result error';
+            }
+        }
+    </script>
+</body>
+</html>

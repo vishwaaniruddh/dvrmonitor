@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Health Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #6c757d; cursor: not-allowed; }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .warning { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏥 Server Health Test</h1>
+        <p>Test if the server stays responsive during HLS operations</p>
+        
+        <div>
+            <button onclick="startHealthMonitor()">💓 Start Health Monitor</button>
+            <button onclick="testHlsStart()">🎥 Test HLS Start</button>
+            <button onclick="testSimpleApi()">🔍 Test Simple API</button>
+            <button onclick="stopHealthMonitor()">⏹️ Stop Monitor</button>
+        </div>
+
+        <div id="healthStatus" class="status info">Click "Start Health Monitor" to begin monitoring server responsiveness</div>
+        <div id="testResults" class="status info">Test results will appear here</div>
+    </div>
+
+    <script>
+        let healthInterval = null;
+        let healthCount = 0;
+        const healthDiv = document.getElementById('healthStatus');
+        const resultsDiv = document.getElementById('testResults');
+
+        function startHealthMonitor() {
+            if (healthInterval) return;
+            
+            healthCount = 0;
+            healthInterval = setInterval(async () => {
+                try {
+                    const start = Date.now();
+                    const response = await fetch('/api/dvrs?limit=1');
+                    const duration = Date.now() - start;
+                    
+                    healthCount++;
+                    healthDiv.textContent = `💓 Health Check #${healthCount}: Server responsive (${duration}ms)`;
+                    healthDiv.className = 'status success';
+                    
+                } catch (error) {
+                    healthDiv.textContent = `💔 Health Check #${healthCount}: Server unresponsive - ${error.message}`;
+                    healthDiv.className = 'status error';
+                }
+            }, 2000); // Check every 2 seconds
+            
+            healthDiv.textContent = '💓 Health monitor started - checking every 2 seconds';
+            healthDiv.className = 'status info';
+        }
+
+        function stopHealthMonitor() {
+            if (healthInterval) {
+                clearInterval(healthInterval);
+                healthInterval = null;
+                healthDiv.textContent = '⏹️ Health monitor stopped';
+                healthDiv.className = 'status warning';
+            }
+        }
+
+        async function testHlsStart() {
+            try {
+                resultsDiv.textContent = '🎥 Testing HLS start (this used to block the server)...';
+                resultsDiv.className = 'status info';
+                
+                const start = Date.now();
+                const response = await fetch('/api/hls/start/10.126.37.107/1', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const duration = Date.now() - start;
+                
+                const data = await response.json();
+                
+                resultsDiv.textContent = `🎥 HLS Start Result (${duration}ms):
+${data.success ? '✅' : '❌'} ${data.message}
+
+${duration < 1000 ? '🎉 Server responded quickly!' : '⚠️ Server took a while but didn\'t hang!'}`;
+                resultsDiv.className = data.success ? 'status success' : 'status warning';
+                
+            } catch (error) {
+                resultsDiv.textContent = `❌ HLS Start Error: ${error.message}`;
+                resultsDiv.className = 'status error';
+            }
+        }
+
+        async function testSimpleApi() {
+            try {
+                resultsDiv.textContent = '🔍 Testing simple API call...';
+                resultsDiv.className = 'status info';
+                
+                const start = Date.now();
+                const response = await fetch('/api/dvrs?limit=5');
+                const duration = Date.now() - start;
+                
+                const data = await response.json();
+                
+                resultsDiv.textContent = `🔍 Simple API Result (${duration}ms):
+✅ Server is responsive
+📊 Returned ${data.data ? data.data.length : 0} DVRs
+
+${duration < 500 ? '🚀 Lightning fast!' : duration < 1000 ? '✅ Good response time' : '⚠️ Slow but working'}`;
+                resultsDiv.className = 'status success';
+                
+            } catch (error) {
+                resultsDiv.textContent = `❌ Simple API Error: ${error.message}`;
+                resultsDiv.className = 'status error';
+            }
+        }
+
+        // Auto-start health monitor
+        window.addEventListener('load', () => {
+            setTimeout(startHealthMonitor, 1000);
+        });
+    </script>
+</body>
+</html>

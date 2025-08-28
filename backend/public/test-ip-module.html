@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test IP Module</title>
+</head>
+<body>
+    <h1>Test IP-Based DVR Module</h1>
+    <input type="text" id="testIp" placeholder="Enter DVR IP">
+    <button onclick="testIp()">Test</button>
+    <div id="result"></div>
+
+    <script>
+        async function testIp() {
+            const ip = document.getElementById('testIp').value;
+            const response = await fetch('/api/enhanced-monitoring/test-by-ip', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ip: ip})
+            });
+            const data = await response.json();
+            document.getElementById('result').innerHTML = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>

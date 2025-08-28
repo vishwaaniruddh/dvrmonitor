@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HLS Stream Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        video {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            background: #000;
+            border-radius: 8px;
+        }
+        .controls {
+            margin: 20px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .status {
+            margin: 10px 0;
+            padding: 10px;
+            background: #e9ecef;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎥 HLS Stream Test Player</h1>
+        
+        <div class="controls">
+            <button onclick="loadStream()">▶️ Load HLS Stream</button>
+            <button onclick="stopStream()">⏹️ Stop Stream</button>
+            <button onclick="checkStatus()">📊 Check Status</button>
+        </div>
+
+        <video id="video" controls muted playsinline>
+            Your browser does not support the video tag.
+        </video>
+
+        <div class="status" id="status">
+            Ready to load stream...
+        </div>
+
+        <div class="info">
+            <h3>Stream Information:</h3>
+            <p><strong>DVR IP:</strong> 10.109.72.104</p>
+            <p><strong>Channel:</strong> 1</p>
+            <p><strong>HLS URL:</strong> <span id="hlsUrl">Not loaded</span></p>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const statusDiv = document.getElementById('status');
+        const hlsUrlSpan = document.getElementById('hlsUrl');
+        let hls = null;
+
+        async function loadStream() {
+            try {
+                statusDiv.textContent = '🔄 Starting HLS stream...';
+                
+                // Step 1: Start the stream via POST request
+                const startResponse = await fetch('http://127.0.0.1:8000/api/hls/start/10.109.72.104/1', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!startResponse.ok) {
+                    throw new Error(`Failed to start stream: ${startResponse.status}`);
+                }
+
+                const startData = await startResponse.json();
+                
+                if (!startData.success) {
+                    throw new Error(startData.message);
+                }
+
+                statusDiv.textContent = '🔄 Stream started, loading player...';
+                
+                // Step 2: Use the returned HLS URL
+                const hlsUrl = startData.data.hls_url;
+                hlsUrlSpan.textContent = hlsUrl;
+
+                // Wait a moment for the stream to initialize
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Native HLS support (Safari)
+                    video.src = hlsUrl;
+                    statusDiv.textContent = '✅ HLS stream loaded (native support)';
+                } else if (Hls.isSupported()) {
+                    // Use HLS.js for other browsers
+                    if (hls) {
+                        hls.destroy();
+                    }
+                    
+                    hls = new Hls({
+                        debug: true,
+                        enableWorker: false
+                    });
+                    
+                    hls.loadSource(hlsUrl);
+                    hls.attachMedia(video);
+                    
+                    hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                        statusDiv.textContent = '✅ HLS stream loaded successfully';
+                        video.play().catch(e => {
+                            statusDiv.textContent = '⚠️ Stream loaded but autoplay blocked. Click play button.';
+                        });
+                    });
+
+                    hls.on(Hls.Events.ERROR, function(event, data) {
+                        statusDiv.textContent = `❌ HLS Error: ${data.type} - ${data.details}`;
+                        console.error('HLS Error:', data);
+                    });
+                } else {
+                    statusDiv.textContent = '❌ HLS not supported in this browser';
+                }
+
+            } catch (error) {
+                statusDiv.textContent = `❌ Error: ${error.message}`;
+                console.error('Stream error:', error);
+            }
+        }
+
+        async function stopStream() {
+            try {
+                // Stop the HLS player
+                if (hls) {
+                    hls.destroy();
+                    hls = null;
+                }
+                video.pause();
+                video.src = '';
+                
+                statusDiv.textContent = '🔄 Stopping stream...';
+                
+                // Stop the stream on the server
+                const stopResponse = await fetch('http://127.0.0.1:8000/api/hls/stop/10.109.72.104/1', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const stopData = await stopResponse.json();
+                
+                statusDiv.textContent = stopData.success ? 
+                    '⏹️ Stream stopped successfully' : 
+                    `⚠️ Stream stopped locally (server: ${stopData.message})`;
+                    
+                hlsUrlSpan.textContent = 'Not loaded';
+                
+            } catch (error) {
+                statusDiv.textContent = '⏹️ Stream stopped locally (server error)';
+                hlsUrlSpan.textContent = 'Not loaded';
+                console.error('Stop stream error:', error);
+            }
+        }
+
+        async function checkStatus() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/hls/status/10.109.72.104/1');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const status = data.data;
+                    statusDiv.innerHTML = `
+                        📊 Stream Status:<br>
+                        • Running: ${status.is_running ? '✅ Yes' : '❌ No'}<br>
+                        • Playlist exists: ${status.playlist_exists ? '✅ Yes' : '❌ No'}<br>
+                        • Last updated: ${status.last_updated ? new Date(status.last_updated * 1000).toLocaleString() : 'Never'}
+                    `;
+                } else {
+                    statusDiv.textContent = `❌ Status check failed: ${data.message}`;
+                }
+            } catch (error) {
+                statusDiv.textContent = `❌ Status check error: ${error.message}`;
+            }
+        }
+
+        // Auto-load stream on page load
+        window.addEventListener('load', function() {
+            setTimeout(loadStream, 1000);
+        });
+    </script>
+</body>
+</html>

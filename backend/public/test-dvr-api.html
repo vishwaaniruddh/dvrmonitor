@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DVR API Tester</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"], input[type="number"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .loading {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .example {
+            background: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 DVR API Tester</h1>
+        
+        <form id="dvrForm">
+            <div class="form-group">
+                <label for="ip">DVR IP Address:</label>
+                <input type="text" id="ip" name="ip" value="10.185.183.63" required>
+                <div class="example">Example: 10.185.183.63</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="port">DVR Port:</label>
+                <input type="number" id="port" name="port" value="80" required>
+                <div class="example">Usually 80 for CP Plus DVRs</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="admin" required>
+                <div class="example">Default is usually 'admin'</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="admin" required>
+                <div class="example">Default is usually 'admin'</div>
+            </div>
+            
+            <button type="button" class="btn" onclick="pingTest()">🏓 Ping Test</button>
+            <button type="button" class="btn" onclick="fullTest()">🔍 Full DVR Test</button>
+            <button type="button" class="btn" onclick="clearResults()">🗑️ Clear Results</button>
+        </form>
+        
+        <div id="results"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        
+        function showResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            resultsDiv.appendChild(resultDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+        
+        function showLoading(message) {
+            showResult(message, 'loading');
+        }
+        
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        async function pingTest() {
+            const ip = document.getElementById('ip').value;
+            const port = document.getElementById('port').value;
+            
+            if (!ip || !port) {
+                showResult('Please enter IP and port', 'error');
+                return;
+            }
+            
+            showLoading(`Pinging ${ip}:${port}...`);
+            
+            try {
+                const response = await fetch(`${API_BASE}/ping-dvr`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ ip, port: parseInt(port) })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    const status = data.reachable ? '✅ REACHABLE' : '❌ NOT REACHABLE';
+                    const message = `${status} - Response time: ${data.response_time_ms}ms - HTTP: ${data.http_code}`;
+                    showResult(message, data.reachable ? 'success' : 'error');
+                } else {
+                    showResult(`Ping failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Network error: ${error.message}`, 'error');
+            }
+        }
+        
+        async function fullTest() {
+            const ip = document.getElementById('ip').value;
+            const port = document.getElementById('port').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!ip || !port || !username || !password) {
+                showResult('Please fill in all fields', 'error');
+                return;
+            }
+            
+            showLoading(`Testing DVR ${ip}:${port} with credentials ${username}:${password}...`);
+            
+            try {
+                const response = await fetch(`${API_BASE}/test-dvr`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        ip,
+                        port: parseInt(port),
+                        username,
+                        password,
+                        dvr_type: 'cpplus'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showResult('✅ DVR TEST SUCCESSFUL!', 'success');
+                    
+                    // Show DVR details
+                    if (data.data) {
+                        if (data.data.dvr_time) {
+                            showResult(`📅 DVR Time: ${data.data.dvr_time.current_time}`, 'info');
+                            showResult(`🕐 System Time: ${data.data.dvr_time.system_time}`, 'info');
+                        }
+                        
+                        if (data.data.cameras) {
+                            const cameras = data.data.cameras;
+                            showResult(`📹 Cameras: ${cameras.total_cameras} total, ${cameras.working_cameras} working`, 'info');
+                            
+                            if (cameras.cameras && cameras.cameras.length > 0) {
+                                cameras.cameras.forEach(camera => {
+                                    const status = camera.status === 'working' ? '✅' : '❌';
+                                    showResult(`   ${status} Camera ${camera.channel}: ${camera.name} (${camera.status})`, 'info');
+                                });
+                            }
+                        }
+                        
+                        if (data.data.storage) {
+                            const storage = data.data.storage;
+                            showResult(`💾 Storage: ${storage.storage_type} - ${storage.storage_status}`, 'info');
+                            showResult(`📊 Capacity: ${storage.total_capacity_gb}GB total, ${storage.free_capacity_gb}GB free (${storage.usage_percentage}% used)`, 'info');
+                        }
+                        
+                        if (data.data.recording) {
+                            const recording = data.data.recording;
+                            showResult(`🎬 Recording: ${recording.recording_active ? 'Active' : 'Inactive'}`, 'info');
+                            if (recording.recording_from !== 'N/A') {
+                                showResult(`📅 Recording from: ${recording.recording_from} to ${recording.recording_to}`, 'info');
+                            }
+                        }
+                    }
+                } else {
+                    showResult(`❌ DVR TEST FAILED: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                showResult(`Network error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Auto-focus on IP field
+        document.getElementById('ip').focus();
+    </script>
+</body>
+</html>

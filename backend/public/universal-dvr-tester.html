@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal DVR Tester</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.8;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .input-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            font-weight: bold;
+            color: #495057;
+            min-width: 120px;
+        }
+
+        .ip-input {
+            flex: 1;
+            max-width: 300px;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .ip-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .test-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 200px;
+        }
+
+        .test-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .test-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .result-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        .status-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .media-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .media-container {
+            width: 100%;
+            height: 200px;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+            position: relative;
+        }
+
+        .media-image,
+        .media-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hls-video {
+            background: #000;
+            border-radius: 8px;
+        }
+
+        .mjpeg-stream {
+            cursor: pointer;
+        }
+
+        .stream-status {
+            padding: 5px 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+            font-family: monospace;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        .control-btn:disabled {
+            background: #6c757d !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+        }
+
+        .hls-video::-webkit-media-controls-panel {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .media-container:hover {
+            transform: scale(1.02);
+            transition: transform 0.2s ease;
+        }
+
+        .media-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .media-controls {
+                flex-direction: column;
+            }
+            
+            .control-btn {
+                width: 100%;
+                margin: 2px 0;
+            }
+        }
+
+        .media-fallback {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #343a40;
+            color: white;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .media-controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .control-btn {
+            padding: 6px 12px;
+            font-size: 0.85em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #6c757d;
+            color: white;
+            transition: background 0.2s;
+        }
+
+        .control-btn:hover {
+            background: #5a6268;
+        }
+
+        .control-btn.active {
+            background: #28a745;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+            margin: 15px 0;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            margin: 15px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .input-group label {
+                min-width: auto;
+            }
+
+            .media-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Universal DVR Tester</h1>
+            <p>Complete DVR testing solution - Ping, Time Sync, Camera Status, Streaming & Snapshots</p>
+        </div>
+
+        <div class="main-card">
+            <div class="input-section">
+                <h3 style="margin-bottom: 20px; color: #495057;">🔍 DVR Connection Test</h3>
+                <div class="input-group">
+                    <label for="dvrIp">DVR IP Address:</label>
+                    <input type="text" id="dvrIp" class="ip-input" placeholder="e.g., 192.168.1.100"
+                        value="10.109.72.104">
+                    <button id="testBtn" class="test-btn" onclick="runCompleteTest()">🚀 Run Complete Test</button>
+                </div>
+                <div style="font-size: 0.9em; color: #6c757d; margin-top: 10px;">
+                    ⚡ Parallel Testing: Ping + DVR Time + Camera Status + Live Streaming + Snapshots (All Simultaneous)
+                </div>
+            </div>
+
+            <div id="resultsSection" class="results-section hidden">
+                <!-- Results will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        let currentTest = null;
+
+        // Run complete DVR test - OPTIMIZED FOR PARALLEL EXECUTION
+        async function runCompleteTest() {
+            const ip = document.getElementById('dvrIp').value.trim();
+
+            if (!ip) {
+                showError('Please enter a valid IP address');
+                return;
+            }
+
+            if (!validateIP(ip)) {
+                showError('Please enter a valid IP address format');
+                return;
+            }
+
+            // Disable button and show loading
+            const testBtn = document.getElementById('testBtn');
+            testBtn.disabled = true;
+            testBtn.textContent = '🔄 Testing...';
+
+            // Show results section with real-time progress
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.remove('hidden');
+            
+            // Initialize progress display
+            displayProgressResults(ip);
+
+            try {
+                console.log('🚀 Starting parallel tests for IP:', ip);
+                
+                // Run ALL tests simultaneously for maximum speed
+                const [basicTest, cameraTest, mediaTest] = await Promise.allSettled([
+                    runBasicTest(ip),
+                    runCameraTest(ip), 
+                    runMediaTest(ip)
+                ]);
+
+                console.log('✅ All tests completed:', {
+                    basic: basicTest.status,
+                    camera: cameraTest.status,
+                    media: mediaTest.status
+                });
+
+                // Process results (handle both fulfilled and rejected promises)
+                const processedResults = {
+                    basicTest: basicTest.status === 'fulfilled' ? basicTest.value : { 
+                        success: false, 
+                        error: basicTest.reason?.message || 'Test failed' 
+                    },
+                    cameraTest: cameraTest.status === 'fulfilled' ? cameraTest.value : { 
+                        success: false, 
+                        error: cameraTest.reason?.message || 'Test failed' 
+                    },
+                    mediaTest: mediaTest.status === 'fulfilled' ? mediaTest.value : { 
+                        success: false, 
+                        error: mediaTest.reason?.message || 'Test failed' 
+                    }
+                };
+
+                // Display all results
+                displayCompleteResults(processedResults.basicTest, processedResults.cameraTest, processedResults.mediaTest, ip);
+
+            } catch (error) {
+                showError(`Test failed: ${error.message}`);
+            } finally {
+                // Re-enable button
+                testBtn.disabled = false;
+                testBtn.textContent = '🚀 Run Complete Test';
+            }
+        }
+
+        // Display progress while tests are running
+        function displayProgressResults(ip) {
+            const html = `
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-title">🔍 DVR Connection & Time Sync</div>
+                        <div class="status-badge status-loading">🔄 Testing</div>
+                    </div>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Testing ping, API login, and time sync...
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-title">📹 Camera Status</div>
+                        <div class="status-badge status-loading">🔄 Testing</div>
+                    </div>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Checking camera channels and status...
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-title">📸 Media Services</div>
+                        <div class="status-badge status-loading">🔄 Testing</div>
+                    </div>
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        Testing snapshots and streaming capabilities...
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('resultsSection').innerHTML = html;
+        }
+
+        // Step 1: Basic DVR Test - SIMPLIFIED
+        async function runBasicTest(ip) {
+            try {
+                console.log('📡 Starting basic DVR test for:', ip);
+                
+                const response = await fetch(`${API_BASE}/enhanced-monitoring/test-by-ip`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ip: ip })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('📡 Basic DVR test result:', data.success);
+
+                if (!data.success) {
+                    throw new Error(data.message || 'DVR test failed');
+                }
+
+                return {
+                    success: true,
+                    dvrInfo: data.dvr_info,
+                    testResult: data.test_result,
+                    dvrId: data.dvr_info.id
+                };
+            } catch (error) {
+                console.error('📡 Basic DVR test error:', error);
+                throw new Error(error.message || 'DVR connection failed');
+            }
+        }
+
+        // Step 2: Camera Status Test - SIMPLIFIED (uses same endpoint as basic test)
+        async function runCameraTest(ip) {
+            try {
+                console.log('📹 Starting camera test for:', ip);
+                
+                const response = await fetch(`${API_BASE}/enhanced-monitoring/test-by-ip`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ip: ip })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('📹 Camera test result:', data.success);
+
+                return {
+                    success: data.success,
+                    cameras: data.success && data.camera_status ? data.camera_status.cameras : null,
+                    error: data.success ? null : data.message
+                };
+            } catch (error) {
+                console.error('📹 Camera test error:', error);
+                throw new Error(error.message || 'Camera status check failed');
+            }
+        }
+
+        // Step 3: Media Test (Streaming + Snapshots) - SIMPLIFIED
+        async function runMediaTest(ip) {
+            try {
+                console.log('📸 Starting media test for:', ip);
+                
+                const response = await fetch(`${API_BASE}/streaming/dvr/${ip}/snapshot`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log('📸 Media test result:', data.success);
+
+                return {
+                    success: data.success,
+                    snapshotInfo: data.success ? data.snapshot_info : null,
+                    streamingInfo: data.success ? data.streaming_info : null,
+                    error: data.success ? null : data.message
+                };
+            } catch (error) {
+                console.error('📸 Media test error:', error);
+                throw new Error(error.message || 'Media services test failed');
+            }
+        }
+
+        // Display complete results
+        function displayCompleteResults(basicTest, cameraTest, mediaTest, ip) {
+            let html = '';
+
+            // Basic Test Results
+            html += createResultCard(
+                '🔍 DVR Connection & Time Sync',
+                basicTest.success ? 'success' : 'error',
+                basicTest.success ? generateBasicTestHTML(basicTest) : `<div class="error-message">${basicTest.error}</div>`
+            );
+
+            // Camera Test Results
+            html += createResultCard(
+                '📹 Camera Status',
+                cameraTest.success ? 'success' : 'error',
+                cameraTest.success ? generateCameraTestHTML(cameraTest) : `<div class="error-message">${cameraTest.error}</div>`
+            );
+
+            // Media Test Results
+            if (mediaTest.success) {
+                html += createResultCard(
+                    '📸 Live Snapshots',
+                    'success',
+                    generateSnapshotHTML(mediaTest.snapshotInfo, ip)
+                );
+
+                html += createResultCard(
+                    '🎥 Live Video Streams',
+                    'success',
+                    generateStreamingHTML(mediaTest.streamingInfo, ip)
+                );
+            } else {
+                html += createResultCard(
+                    '📸 Media Test',
+                    'error',
+                    `<div class="error-message">${mediaTest.error}</div>`
+                );
+            }
+
+            document.getElementById('resultsSection').innerHTML = html;
+        }
+
+        // Generate basic test HTML
+        function generateBasicTestHTML(basicTest) {
+            const dvr = basicTest.dvrInfo;
+            const test = basicTest.testResult;
+
+            return `
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">DVR Name</div>
+                        <div class="info-value">${dvr.dvr_name}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">IP:Port</div>
+                        <div class="info-value">${dvr.ip}:${dvr.port}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ping Status</div>
+                        <div class="info-value">${test.ping_success ? '✅ Success' : '❌ Failed'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Response Time</div>
+                        <div class="info-value">${test.response_time || 'N/A'}ms</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">API Login</div>
+                        <div class="info-value">${test.api_success ? '✅ Success' : '❌ Failed'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">DVR Time</div>
+                        <div class="info-value">${test.dvr_time ? new Date(test.dvr_time).toLocaleString() : 'N/A'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Time Sync</div>
+                        <div class="info-value">${dvr.device_time_offset_minutes !== null ?
+                    (Math.abs(dvr.device_time_offset_minutes) <= 5 ? '✅ Synced' : `⚠️ ${dvr.device_time_offset_minutes}min offset`) :
+                    '⚪ Unknown'}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Overall Status</div>
+                        <div class="info-value">${test.status.toUpperCase()}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Generate camera test HTML
+        function generateCameraTestHTML(cameraTest) {
+            const cameras = cameraTest.cameras;
+
+            let html = `
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Total Cameras</div>
+                        <div class="info-value">${cameras.total_cameras}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Working Cameras</div>
+                        <div class="info-value">✅ ${cameras.working_cameras}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Not Working</div>
+                        <div class="info-value">❌ ${cameras.not_working_cameras}</div>
+                    </div>
+                </div>
+            `;
+
+            if (cameras.cameras && cameras.cameras.length > 0) {
+                html += '<h4 style="margin: 20px 0 10px 0;">Camera Details:</h4>';
+                html += '<div class="info-grid">';
+
+                cameras.cameras.forEach(camera => {
+                    html += `
+                        <div class="info-item">
+                            <div class="info-label">Channel ${camera.channel}</div>
+                            <div class="info-value">${camera.status === 'working' ? '✅' : '❌'} ${camera.name || 'Camera ' + camera.channel}</div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+            }
+
+            return html;
+        }
+
+        // Generate snapshot HTML
+        function generateSnapshotHTML(snapshotInfo, ip) {
+            let html = '<div style="margin-bottom: 15px;">';
+            html += '<button class="control-btn" onclick="loadAllSnapshots(\'' + ip + '\')">🔄 Load All Images</button>';
+            html += '<button class="control-btn" onclick="refreshAllSnapshots(\'' + ip + '\')">🔄 Refresh All</button>';
+            html += '</div>';
+            html += '<div class="media-grid">';
+
+            if (snapshotInfo && snapshotInfo.channels) {
+                Object.values(snapshotInfo.channels).forEach(channelData => {
+                    const channel = channelData.channel;
+                    const proxyUrl = `${API_BASE}/streaming/dvr/${ip}/image/${channel}`;
+
+                    html += `
+                        <div class="media-card">
+                            <h4>📹 Channel ${channel}</h4>
+                            <div class="media-container">
+                                <img class="media-image" 
+                                     src="${proxyUrl}?t=${Date.now()}" 
+                                     alt="Channel ${channel} Snapshot"
+                                     onclick="openFullscreen('${proxyUrl}', ${channel})"
+                                     onload="this.nextElementSibling.style.display='none';"
+                                     onerror="console.error('Image failed to load:', '${proxyUrl}'); retryImageLoad(this, '${proxyUrl}', ${channel});">
+                                <div class="media-fallback" style="display: flex;">
+                                    📷 Loading snapshot...
+                                </div>
+                            </div>
+                            <div class="media-controls">
+                                <button class="control-btn" onclick="refreshSnapshot('${proxyUrl}', ${channel})">🔄 Refresh</button>
+                                <button class="control-btn" onclick="downloadImage('${proxyUrl}', ${channel})">💾 Save</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        // Generate streaming HTML with HLS support
+        function generateStreamingHTML(streamingInfo, ip) {
+            let html = '<div style="margin-bottom: 15px;">';
+            html += '<button class="control-btn" onclick="startAllHlsStreams(\'' + ip + '\')">▶️ Start All HLS</button>';
+            html += '<button class="control-btn" onclick="stopAllHlsStreams(\'' + ip + '\')">⏹️ Stop All HLS</button>';
+            html += '</div>';
+            html += '<div class="media-grid">';
+
+            if (streamingInfo && streamingInfo.channels) {
+                streamingInfo.channels.forEach(channel => {
+                    const channelNum = channel.channel_number;
+                    const proxyStreamMain = `${API_BASE}/streaming/dvr/${ip}/stream/${channelNum}?subtype=0`;
+                    const proxyStreamSub = `${API_BASE}/streaming/dvr/${ip}/stream/${channelNum}?subtype=1`;
+                    const rtspUrl = channel.rtsp_main_stream;
+
+                    html += `
+                        <div class="media-card" id="stream-card-${channelNum}">
+                            <h4>🎥 Channel ${channelNum} Stream</h4>
+                            <div class="media-container">
+                                <video class="media-video hls-video" 
+                                       id="video-${channelNum}"
+                                       controls 
+                                       muted 
+                                       playsinline
+                                       preload="none"
+                                       style="display: none;">
+                                    Your browser does not support HLS video playback.
+                                </video>
+                                <img class="media-video mjpeg-stream" 
+                                     id="mjpeg-${channelNum}"
+                                     src="${proxyStreamMain}" 
+                                     alt="Channel ${channelNum} Stream"
+                                     style="display: none;"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="media-fallback" id="fallback-${channelNum}" style="display: flex;">
+                                    📺 Choose streaming option below<br>
+                                    <small>HLS for web player, MJPEG for quick preview, VLC for RTSP</small>
+                                </div>
+                            </div>
+                            <div class="media-controls">
+                                <button class="control-btn hls-btn" onclick="startHlsStream('${ip}', ${channelNum})">▶️ Play HLS</button>
+                                <button class="control-btn" onclick="stopHlsStream('${ip}', ${channelNum})">⏹️ Stop HLS</button>
+                                <button class="control-btn" onclick="switchToMjpeg(${channelNum}, '${proxyStreamMain}')">📷 MJPEG Main</button>
+                                <button class="control-btn" onclick="switchToMjpeg(${channelNum}, '${proxyStreamSub}')">📷 MJPEG Sub</button>
+                                <button class="control-btn" onclick="openVLC('${rtspUrl}')">🎬 VLC</button>
+                            </div>
+                            <div class="stream-status" id="status-${channelNum}" style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                                Ready to stream - Choose an option above
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        // Create result card
+        function createResultCard(title, status, content) {
+            const statusClass = status === 'success' ? 'status-success' :
+                status === 'error' ? 'status-error' : 'status-loading';
+            const statusText = status === 'success' ? '✅ Success' :
+                status === 'error' ? '❌ Failed' : '🔄 Testing';
+
+            return `
+                <div class="result-card">
+                    <div class="result-header">
+                        <div class="result-title">${title}</div>
+                        <div class="status-badge ${statusClass}">${statusText}</div>
+                    </div>
+                    ${content}
+                </div>
+            `;
+        }
+
+        // Utility functions
+        function validateIP(ip) {
+            const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+            return ipRegex.test(ip);
+        }
+
+        function showError(message) {
+            const resultsSection = document.getElementById('resultsSection');
+            resultsSection.classList.remove('hidden');
+            resultsSection.innerHTML = `<div class="error-message">${message}</div>`;
+        }
+
+        function refreshSnapshot(url, channel) {
+            const img = document.querySelector(`img[alt="Channel ${channel} Snapshot"]`);
+            if (img) {
+                // Show loading state
+                const fallback = img.nextElementSibling;
+                if (fallback) {
+                    fallback.style.display = 'flex';
+                    fallback.innerHTML = '🔄 Refreshing...';
+                }
+
+                // Add timestamp to prevent caching
+                img.src = url + '?t=' + Date.now();
+            }
+        }
+
+        function downloadImage(url, channel) {
+            const link = document.createElement('a');
+            link.href = url + '?t=' + Date.now();
+            link.download = `channel_${channel}_snapshot_${Date.now()}.jpg`;
+            link.click();
+        }
+
+        // Retry loading failed images
+        function retryImageLoad(img, url, channel, attempt = 1) {
+            if (attempt > 3) {
+                const fallback = img.nextElementSibling;
+                if (fallback) {
+                    fallback.innerHTML = '❌ Snapshot failed<br><small>Try refresh or check DVR</small>';
+                }
+                return;
+            }
+
+            setTimeout(() => {
+                console.log(`Retrying image load for channel ${channel}, attempt ${attempt}`);
+                img.src = url + '?t=' + Date.now() + '&retry=' + attempt;
+            }, 1000 * attempt); // Increasing delay: 1s, 2s, 3s
+        }
+
+        // Load all snapshots manually
+        function loadAllSnapshots(ip) {
+            const images = document.querySelectorAll('.media-image');
+            images.forEach((img, index) => {
+                setTimeout(() => {
+                    const channel = img.alt.match(/Channel (\d+)/)[1];
+                    const url = `${API_BASE}/streaming/dvr/${ip}/image/${channel}`;
+
+                    // Show loading state
+                    const fallback = img.nextElementSibling;
+                    if (fallback) {
+                        fallback.style.display = 'flex';
+                        fallback.innerHTML = '🔄 Loading...';
+                    }
+
+                    img.src = url + '?t=' + Date.now();
+                }, index * 500); // Stagger loading by 500ms
+            });
+        }
+
+        // Refresh all snapshots
+        function refreshAllSnapshots(ip) {
+            const images = document.querySelectorAll('.media-image');
+            images.forEach((img, index) => {
+                setTimeout(() => {
+                    const channel = img.alt.match(/Channel (\d+)/)[1];
+                    refreshSnapshot(`${API_BASE}/streaming/dvr/${ip}/image/${channel}`, channel);
+                }, index * 200); // Stagger refresh by 200ms
+            });
+        }
+
+        // HLS Streaming Functions
+        async function startHlsStream(ip, channel) {
+            const statusEl = document.getElementById(`status-${channel}`);
+            const videoEl = document.getElementById(`video-${channel}`);
+            const mjpegEl = document.getElementById(`mjpeg-${channel}`);
+            const fallbackEl = document.getElementById(`fallback-${channel}`);
+            const hlsBtn = document.querySelector(`#stream-card-${channel} .hls-btn`);
+
+            try {
+                statusEl.textContent = '🔄 Starting HLS stream...';
+                statusEl.style.color = '#856404';
+                hlsBtn.disabled = true;
+                hlsBtn.textContent = '🔄 Starting...';
+
+                // Start HLS stream on server with timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
+                const response = await fetch(`${API_BASE}/hls/start/${ip}/${channel}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal
+                });
+                clearTimeout(timeoutId);
+
+                const data = await response.json();
+
+                if (data.success) {
+                    statusEl.textContent = '🔄 Initializing HLS player...';
+                    
+                    // Wait for stream to be ready
+                    await waitForHlsStream(ip, channel);
+
+                    // Load HLS stream in player
+                    const hlsUrl = `${API_BASE}/hls/stream_${ip.replace(/\./g, '_')}_ch${channel}/playlist.m3u8`;
+                    
+                    await loadHlsIntoPlayer(videoEl, hlsUrl, channel);
+
+                    // Show video, hide others
+                    videoEl.style.display = 'block';
+                    mjpegEl.style.display = 'none';
+                    fallbackEl.style.display = 'none';
+
+                    statusEl.textContent = '✅ HLS stream ready - Click play to start';
+                    statusEl.style.color = '#155724';
+                    hlsBtn.textContent = '✅ HLS Active';
+                    hlsBtn.disabled = false;
+
+                } else {
+                    throw new Error(data.message || 'Failed to start HLS stream');
+                }
+
+            } catch (error) {
+                console.error('HLS stream error:', error);
+                
+                let errorMessage = error.message;
+                if (error.name === 'AbortError') {
+                    errorMessage = 'Request timeout - server may be busy';
+                }
+                
+                statusEl.textContent = `❌ HLS unavailable: ${errorMessage}`;
+                statusEl.style.color = '#721c24';
+                hlsBtn.textContent = '❌ HLS Disabled';
+                hlsBtn.disabled = true; // Keep disabled if HLS is not working
+                
+                // Auto-fallback to MJPEG with user notification
+                statusEl.textContent += ' - Auto-switching to MJPEG...';
+                setTimeout(() => {
+                    switchToMjpeg(channel, `${API_BASE}/streaming/dvr/${ip}/stream/${channel}?subtype=0`);
+                }, 1000);
+            }
+        }
+
+        // Wait for HLS stream to be ready (non-blocking with timeout)
+        async function waitForHlsStream(ip, channel, maxAttempts = 5) {
+            for (let i = 0; i < maxAttempts; i++) {
+                try {
+                    // Add timeout to prevent hanging
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 3000);
+                    
+                    const response = await fetch(`${API_BASE}/hls/status/${ip}/${channel}`, {
+                        signal: controller.signal
+                    });
+                    clearTimeout(timeoutId);
+                    
+                    const data = await response.json();
+                    
+                    if (data.success && data.data.playlist_exists) {
+                        return true;
+                    }
+                } catch (error) {
+                    console.log(`Attempt ${i + 1}: Stream not ready yet (${error.message})`);
+                }
+                
+                // Shorter delay to reduce blocking
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+            throw new Error('Stream failed to initialize after 2.5 seconds');
+        }
+
+        // Load HLS stream into video player
+        async function loadHlsIntoPlayer(videoEl, hlsUrl, channel) {
+            return new Promise((resolve, reject) => {
+                if (videoEl.canPlayType('application/vnd.apple.mpegurl')) {
+                    // Native HLS support (Safari)
+                    videoEl.src = hlsUrl;
+                    videoEl.addEventListener('loadedmetadata', () => resolve(), { once: true });
+                    videoEl.addEventListener('error', () => reject(new Error('Video load error')), { once: true });
+                } else if (window.Hls && Hls.isSupported()) {
+                    // Use HLS.js for other browsers
+                    if (videoEl.hlsInstance) {
+                        videoEl.hlsInstance.destroy();
+                    }
+                    
+                    const hls = new Hls({
+                        debug: false,
+                        enableWorker: false,
+                        lowLatencyMode: true,
+                        backBufferLength: 90
+                    });
+                    
+                    hls.loadSource(hlsUrl);
+                    hls.attachMedia(videoEl);
+                    videoEl.hlsInstance = hls;
+                    
+                    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                        resolve();
+                    });
+
+                    hls.on(Hls.Events.ERROR, (event, data) => {
+                        console.error('HLS Error:', data);
+                        if (data.fatal) {
+                            reject(new Error(`HLS Error: ${data.details}`));
+                        }
+                    });
+                } else {
+                    reject(new Error('HLS not supported in this browser'));
+                }
+            });
+        }
+
+        async function stopHlsStream(ip, channel) {
+            const statusEl = document.getElementById(`status-${channel}`);
+            const videoEl = document.getElementById(`video-${channel}`);
+            const fallbackEl = document.getElementById(`fallback-${channel}`);
+            const hlsBtn = document.querySelector(`#stream-card-${channel} .hls-btn`);
+
+            try {
+                statusEl.textContent = '🔄 Stopping HLS stream...';
+                statusEl.style.color = '#856404';
+
+                // Stop HLS instance if exists
+                if (videoEl.hlsInstance) {
+                    videoEl.hlsInstance.destroy();
+                    videoEl.hlsInstance = null;
+                }
+
+                // Pause and clear video
+                videoEl.pause();
+                videoEl.src = '';
+
+                // Stop server-side stream
+                await fetch(`${API_BASE}/hls/stop/${ip}/${channel}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                // Show fallback
+                videoEl.style.display = 'none';
+                fallbackEl.style.display = 'flex';
+
+                statusEl.textContent = '⏹️ HLS stream stopped';
+                statusEl.style.color = '#666';
+                hlsBtn.textContent = '▶️ Play HLS';
+
+            } catch (error) {
+                console.error('Error stopping HLS stream:', error);
+                statusEl.textContent = `⚠️ Stop error: ${error.message}`;
+                statusEl.style.color = '#721c24';
+                hlsBtn.textContent = '▶️ Play HLS';
+            }
+        }
+
+        function switchToMjpeg(channel, url) {
+            const videoEl = document.getElementById(`video-${channel}`);
+            const mjpegEl = document.getElementById(`mjpeg-${channel}`);
+            const fallbackEl = document.getElementById(`fallback-${channel}`);
+            const statusEl = document.getElementById(`status-${channel}`);
+            const hlsBtn = document.querySelector(`#stream-card-${channel} .hls-btn`);
+
+            // Stop HLS if running
+            if (videoEl.hlsInstance) {
+                videoEl.hlsInstance.destroy();
+                videoEl.hlsInstance = null;
+            }
+            videoEl.pause();
+            videoEl.src = '';
+
+            // Reset HLS button
+            hlsBtn.textContent = '▶️ Play HLS';
+            hlsBtn.disabled = false;
+
+            // Show MJPEG stream
+            mjpegEl.src = url + '?t=' + Date.now();
+            mjpegEl.style.display = 'block';
+            videoEl.style.display = 'none';
+            fallbackEl.style.display = 'none';
+
+            statusEl.textContent = '📷 MJPEG stream active - Live preview';
+            statusEl.style.color = '#155724';
+        }
+
+        async function startAllHlsStreams(ip) {
+            const streamCards = document.querySelectorAll('[id^="stream-card-"]');
+            const startBtn = event.target;
+            
+            startBtn.disabled = true;
+            startBtn.textContent = '🔄 Starting All...';
+            
+            for (let i = 0; i < streamCards.length; i++) {
+                const card = streamCards[i];
+                const channel = card.id.replace('stream-card-', '');
+                
+                // Stagger the starts to avoid overwhelming the server
+                setTimeout(() => {
+                    startHlsStream(ip, channel);
+                }, i * 2000); // 2 second intervals
+            }
+            
+            // Re-enable button after all streams are started
+            setTimeout(() => {
+                startBtn.disabled = false;
+                startBtn.textContent = '▶️ Start All HLS';
+            }, streamCards.length * 2000 + 3000);
+        }
+
+        async function stopAllHlsStreams(ip) {
+            const streamCards = document.querySelectorAll('[id^="stream-card-"]');
+            const stopBtn = event.target;
+            
+            stopBtn.disabled = true;
+            stopBtn.textContent = '🔄 Stopping All...';
+            
+            // Stop all streams simultaneously
+            const promises = [];
+            streamCards.forEach(card => {
+                const channel = card.id.replace('stream-card-', '');
+                promises.push(stopHlsStream(ip, channel));
+            });
+            
+            await Promise.all(promises);
+            
+            stopBtn.disabled = false;
+            stopBtn.textContent = '⏹️ Stop All HLS';
+        }
+
+        function openVLC(rtspUrl) {
+            navigator.clipboard.writeText(rtspUrl).then(() => {
+                alert(`RTSP URL copied to clipboard!\n\nTo view in VLC:\n1. Open VLC Media Player\n2. Go to Media > Open Network Stream\n3. Paste the URL and click Play\n\nURL: ${rtspUrl}`);
+            }).catch(() => {
+                alert(`Open VLC Media Player and use this URL:\n\n${rtspUrl}\n\nGo to Media > Open Network Stream and paste this URL.`);
+            });
+        }
+
+        function openFullscreen(url, channel) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.9); display: flex; align-items: center;
+                justify-content: center; z-index: 10000; cursor: pointer;
+            `;
+
+            const img = document.createElement('img');
+            img.src = url;
+            img.style.cssText = `max-width: 95%; max-height: 95%; object-fit: contain; border-radius: 5px;`;
+
+            modal.appendChild(img);
+            document.body.appendChild(modal);
+
+            modal.addEventListener('click', () => document.body.removeChild(modal));
+        }
+
+        // Allow Enter key to trigger test
+        document.getElementById('dvrIp').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                runCompleteTest();
+            }
+        });
+    </script>
+</body>
+
+</html>

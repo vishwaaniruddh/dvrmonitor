@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced DVR Real-time Monitoring Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+        }
+
+        .btn.danger {
+            background: #e74c3c;
+        }
+
+        .btn.danger:hover {
+            background: #c0392b;
+        }
+
+        .btn.success {
+            background: #27ae60;
+        }
+
+        .btn.success:hover {
+            background: #229954;
+        }
+
+        .dvr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dvr-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .dvr-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .dvr-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .dvr-name {
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .status-online {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .status-api-error {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .dvr-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .info-label {
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: bold;
+        }
+
+        .time-sync-ok {
+            color: #27ae60;
+        }
+
+        .time-sync-issue {
+            color: #e74c3c;
+        }
+
+        .api-status {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.85em;
+        }
+
+        .api-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .api-failed {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .api-not-tested {
+            background: #e2e3e5;
+            color: #383d41;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        .last-updated {
+            text-align: center;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 20px;
+        }
+
+        .monitoring-log {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .log-entry:last-child {
+            border-bottom: none;
+        }
+
+        .log-success {
+            color: #27ae60;
+        }
+
+        .log-error {
+            color: #e74c3c;
+        }
+
+        .log-warning {
+            color: #f39c12;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            width: 95%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .close {
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .close:hover {
+            opacity: 0.7;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .ip-input {
+            width: 200px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .ip-input:focus {
+            border-color: #667eea;
+            outline: none;
+        }
+
+        .test-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .test-result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            display: block;
+        }
+
+        .test-result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            display: block;
+        }
+
+        .test-result.loading {
+            background: #e2e3e5;
+            border: 1px solid #d6d8db;
+            color: #383d41;
+            display: block;
+        }
+
+        .dvr-test-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .test-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .test-info-label {
+            font-weight: bold;
+        }
+
+        /* Video Streaming Styles */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .video-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+        }
+
+        .video-card h6 {
+            margin: 0 0 10px 0;
+            color: #495057;
+            font-size: 1em;
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: #000;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .video-stream {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-fallback {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #343a40;
+            color: white;
+            font-size: 0.9em;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stream-controls {
+            display: flex;
+            gap: 5px;
+            margin-top: 8px;
+        }
+
+        .stream-btn {
+            padding: 4px 8px;
+            font-size: 0.8em;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            background: #6c757d;
+            color: white;
+        }
+
+        .stream-btn:hover {
+            background: #5a6268;
+        }
+
+        .stream-btn.active {
+            background: #28a745;
+        }
+
+        /* Snapshot Styles */
+        .snapshot-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .snapshot-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border: 2px solid #dee2e6;
+        }
+
+        .snapshot-container {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            background: #000;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .snapshot-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .snapshot-fallback {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #6c757d;
+            color: white;
+            font-size: 0.85em;
+            text-align: center;
+        }
+
+        .url-list {
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 0.8em;
+            background: white;
+            border-radius: 3px;
+            padding: 8px;
+        }
+
+        .url-item {
+            margin: 3px 0;
+            padding: 2px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .url-item:last-child {
+            border-bottom: none;
+        }
+
+        .compact-modal .modal-body {
+            padding: 15px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Enhanced DVR Real-time Monitoring Dashboard</h1>
+            <p>Real-time monitoring with device time synchronization and API status tracking</p>
+        </div>
+
+        <div class="controls">
+            <button class="btn success" onclick="startEnhancedMonitoring()">🚀 Start Enhanced Monitoring</button>
+            <button class="btn" onclick="refreshDashboard()">🔄 Refresh</button>
+            <button class="btn" onclick="testSingleDvr()">🧪 Test Single DVR</button>
+            <button class="btn" onclick="showIpTestModal()">🎯 Test DVR by IP</button>
+            <button class="btn danger" onclick="stopMonitoring()">⏹️ Stop Monitoring</button>
+            <span style="margin-left: 20px;">
+                <label>
+                    <input type="checkbox" id="autoRefresh" checked> Auto-refresh (30s)
+                </label>
+            </span>
+        </div>
+
+        <!-- IP Test Modal -->
+        <div id="ipTestModal" class="modal" style="display: none;">
+            <div class="modal-content compact-modal">
+                <div class="modal-header">
+                    <h3>🎯 Universal DVR IP Tester</h3>
+                    <span class="close" onclick="closeIpTestModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p>Enter an IP address to automatically fetch DVR info and test ping + device time:</p>
+                    <div class="input-group">
+                        <label for="testIp">DVR IP Address:</label>
+                        <input type="text" id="testIp" placeholder="e.g., 192.168.1.100" class="ip-input">
+                        <button class="btn success" onclick="testDvrByIp()">🔍 Test DVR</button>
+                        <button class="btn" onclick="testCameraStatus()">📹 Test Cameras</button>
+                        <button class="btn" onclick="getStreamingUrls()">🎥 Live Video Streams</button>
+                        <button class="btn" onclick="getLatestSnapshot()">📸 Live Snapshots</button>
+                    </div>
+                    <div id="ipTestResult" class="test-result"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid" id="statsGrid">
+            <div class="loading">Loading statistics...</div>
+        </div>
+
+        <div class="dvr-grid" id="dvrGrid">
+            <div class="loading">Loading DVR data...</div>
+        </div>
+
+        <div class="monitoring-log">
+            <h3>📊 Real-time Monitoring Log</h3>
+            <div id="monitoringLog">
+                <div class="log-entry">System initialized...</div>
+            </div>
+        </div>
+
+        <div class="last-updated" id="lastUpdated">
+            Last updated: Never
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE = 'http://127.0.0.1:8000/api';
+        let autoRefreshInterval;
+        let monitoringActive = false;
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshDashboard();
+            startAutoRefresh();
+        });
+
+        // Auto-refresh functionality
+        function startAutoRefresh() {
+            const autoRefreshCheckbox = document.getElementById('autoRefresh');
+            
+            if (autoRefreshCheckbox.checked) {
+                autoRefreshInterval = setInterval(() => {
+                    if (monitoringActive) {
+                        refreshDashboard();
+                    }
+                }, 30000); // 30 seconds
+            }
+        }
+
+        function stopAutoRefresh() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        }
+
+        // Toggle auto-refresh
+        document.getElementById('autoRefresh').addEventListener('change', function() {
+            if (this.checked) {
+                startAutoRefresh();
+            } else {
+                stopAutoRefresh();
+            }
+        });
+
+        // Start enhanced monitoring
+        async function startEnhancedMonitoring() {
+            try {
+                addLogEntry('🚀 Starting enhanced monitoring...', 'success');
+                
+                // Start the simplified monitoring service (which now includes enhanced features)
+                const response = await fetch(`${API_BASE}/automated-monitoring/start`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    monitoringActive = true;
+                    addLogEntry(`✅ Enhanced monitoring started: ${data.total_dvrs} DVRs`, 'success');
+                    refreshDashboard();
+                } else {
+                    addLogEntry(`❌ Failed to start monitoring: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                addLogEntry(`❌ Error starting monitoring: ${error.message}`, 'error');
+            }
+        }
+
+        // Stop monitoring
+        async function stopMonitoring() {
+            try {
+                const response = await fetch(`${API_BASE}/automated-monitoring/stop`, {
+                    method: 'POST'
+                });
+                
+                const data = await response.json();
+                monitoringActive = false;
+                addLogEntry('⏹️ Monitoring stopped', 'warning');
+            } catch (error) {
+                addLogEntry(`❌ Error stopping monitoring: ${error.message}`, 'error');
+            }
+        }
+
+        // Test single DVR
+        async function testSingleDvr() {
+            try {
+                // Get first DVR for testing
+                const statusResponse = await fetch(`${API_BASE}/enhanced-monitoring/current-status`);
+                const statusData = await statusResponse.json();
+                
+                if (statusData.success && statusData.dvrs.length > 0) {
+                    const firstDvr = statusData.dvrs[0];
+                    addLogEntry(`🧪 Testing DVR: ${firstDvr.dvr_name} (${firstDvr.ip}:${firstDvr.port})`, 'success');
+                    
+                    const testResponse = await fetch(`${API_BASE}/enhanced-monitoring/dvr/${firstDvr.id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            check_type: 'full_check'
+                        })
+                    });
+                    
+                    const testData = await testResponse.json();
+                    
+                    if (testData.success) {
+                        const result = testData.result;
+                        const pingStatus = result.ping_success ? '✅' : '❌';
+                        const apiStatus = result.api_success ? '🔗' : '🚫';
+                        addLogEntry(`${pingStatus}${apiStatus} Test result: ${result.status} (${result.response_time}ms)`, 'success');
+                        
+                        if (result.dvr_time) {
+                            addLogEntry(`⏰ DVR Time: ${result.dvr_time}`, 'success');
+                        }
+                    } else {
+                        addLogEntry(`❌ Test failed: ${testData.message}`, 'error');
+                    }
+                    
+                    refreshDashboard();
+                }
+            } catch (error) {
+                addLogEntry(`❌ Error testing DVR: ${error.message}`, 'error');
+            }
+        }
+
+        // Refresh dashboard
+        async function refreshDashboard() {
+            await Promise.all([
+                loadStats(),
+                loadDvrStatus()
+            ]);
+            
+            document.getElementById('lastUpdated').textContent = 
+                `Last updated: ${new Date().toLocaleString()}`;
+        }
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-monitoring/stats?hours=24`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const stats = data.stats;
+                    document.getElementById('statsGrid').innerHTML = `
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.total_checks}</div>
+                            <div class="stat-label">Total Checks (24h)</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.successful_pings}</div>
+                            <div class="stat-label">Successful Pings</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.successful_api_logins}</div>
+                            <div class="stat-label">API Logins</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.online_dvrs}</div>
+                            <div class="stat-label">Online DVRs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.offline_dvrs}</div>
+                            <div class="stat-label">Offline DVRs</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.api_error_dvrs}</div>
+                            <div class="stat-label">API Errors</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('statsGrid').innerHTML = '<div class="loading">Error loading statistics</div>';
+                addLogEntry(`❌ Error loading stats: ${error.message}`, 'error');
+            }
+        }
+
+        // Load DVR status
+        async function loadDvrStatus() {
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-monitoring/current-status`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const dvrs = data.dvrs;
+                    let gridHTML = '';
+                    
+                    dvrs.forEach(dvr => {
+                        const statusClass = dvr.status === 'online' ? 'status-online' : 
+                                          dvr.status === 'api_error' ? 'status-api-error' : 'status-offline';
+                        
+                        const apiStatusClass = dvr.api_login_status === 'success' ? 'api-success' : 
+                                             dvr.api_login_status === 'failed' ? 'api-failed' : 'api-not-tested';
+                        
+                        const apiStatusText = dvr.api_login_status === 'success' ? '✅ API Connected' : 
+                                            dvr.api_login_status === 'failed' ? '❌ API Failed' : '⚪ API Not Tested';
+                        
+                        const timeSync = dvr.device_time_offset_minutes !== null ? 
+                                       (Math.abs(dvr.device_time_offset_minutes) <= 5 ? 
+                                        `<span class="time-sync-ok">✅ Synced</span>` : 
+                                        `<span class="time-sync-issue">⚠️ ${dvr.device_time_offset_minutes}min offset</span>`) : 
+                                       '⚪ Unknown';
+                        
+                        gridHTML += `
+                            <div class="dvr-card">
+                                <div class="dvr-header">
+                                    <div class="dvr-name">${dvr.dvr_name}</div>
+                                    <div class="status-badge ${statusClass}">${dvr.status.toUpperCase()}</div>
+                                </div>
+                                
+                                <div class="dvr-info">
+                                    <div class="info-item">
+                                        <span class="info-label">IP:Port</span>
+                                        <span class="info-value">${dvr.ip}:${dvr.port}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Response</span>
+                                        <span class="info-value">${dvr.ping_response_time ? dvr.ping_response_time + 'ms' : 'N/A'}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Last Check</span>
+                                        <span class="info-value">${dvr.last_ping_at ? new Date(dvr.last_ping_at).toLocaleTimeString() : 'Never'}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Time Sync</span>
+                                        <span class="info-value">${timeSync}</span>
+                                    </div>
+                                </div>
+                                
+                                ${dvr.dvr_device_time ? `
+                                    <div class="info-item" style="margin-top: 10px;">
+                                        <span class="info-label">DVR Time</span>
+                                        <span class="info-value">${new Date(dvr.dvr_device_time).toLocaleString()}</span>
+                                    </div>
+                                ` : ''}
+                                
+                                <div class="api-status ${apiStatusClass}">
+                                    ${apiStatusText}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('dvrGrid').innerHTML = gridHTML;
+                }
+            } catch (error) {
+                document.getElementById('dvrGrid').innerHTML = '<div class="loading">Error loading DVR data</div>';
+                addLogEntry(`❌ Error loading DVR status: ${error.message}`, 'error');
+            }
+        }
+
+        // Add log entry
+        function addLogEntry(message, type = 'info') {
+            const logContainer = document.getElementById('monitoringLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            
+            logContainer.appendChild(logEntry);
+            
+            // Keep only last 50 entries
+            const entries = logContainer.children;
+            if (entries.length > 50) {
+                logContainer.removeChild(entries[1]); // Keep the header
+            }
+            
+            // Scroll to bottom
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // IP Test Modal Functions
+        function showIpTestModal() {
+            document.getElementById('ipTestModal').style.display = 'flex';
+            document.getElementById('testIp').focus();
+        }
+
+        function closeIpTestModal() {
+            document.getElementById('ipTestModal').style.display = 'none';
+            document.getElementById('testIp').value = '';
+            document.getElementById('ipTestResult').style.display = 'none';
+        }
+
+        // Test DVR by IP - Universal Module
+        async function testDvrByIp() {
+            const ip = document.getElementById('testIp').value.trim();
+            const resultDiv = document.getElementById('ipTestResult');
+            
+            if (!ip) {
+                showTestResult('Please enter a valid IP address', 'error');
+                return;
+            }
+
+            // Validate IP format
+            const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+            if (!ipRegex.test(ip)) {
+                showTestResult('Please enter a valid IP address format', 'error');
+                return;
+            }
+
+            showTestResult('🔍 Testing DVR... Please wait...', 'loading');
+            addLogEntry(`🎯 Testing DVR by IP: ${ip}`, 'success');
+
+            try {
+                const response = await fetch(`${API_BASE}/enhanced-monitoring/test-by-ip`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ip: ip })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const dvrInfo = data.dvr_info;
+                    const testResult = data.test_result;
+                    
+                    const pingIcon = testResult.ping_success ? '✅' : '❌';
+                    const apiIcon = testResult.api_success ? '🔗' : '🚫';
+                    const timeIcon = testResult.dvr_time ? '⏰' : '🚫';
+                    
+                    let resultHTML = `
+                        <h4>${pingIcon}${apiIcon}${timeIcon} DVR Test Results</h4>
+                        <div class="dvr-test-info">
+                            <div class="test-info-item">
+                                <span class="test-info-label">DVR Name:</span>
+                                <span>${dvrInfo.dvr_name}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">IP:Port:</span>
+                                <span>${dvrInfo.ip}:${dvrInfo.port}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">Username:</span>
+                                <span>${dvrInfo.username || 'admin'}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">Status:</span>
+                                <span>${testResult.status.toUpperCase()}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">Ping:</span>
+                                <span>${testResult.ping_success ? '✅ Success' : '❌ Failed'}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">Response Time:</span>
+                                <span>${testResult.response_time ? testResult.response_time + 'ms' : 'N/A'}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">API Login:</span>
+                                <span>${testResult.api_success ? '✅ Success' : '❌ Failed'}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">DVR Time:</span>
+                                <span>${testResult.dvr_time ? new Date(testResult.dvr_time).toLocaleString() : 'Not Available'}</span>
+                            </div>
+                    `;
+                    
+                    if (dvrInfo.device_time_offset_minutes !== null) {
+                        const offset = Math.abs(dvrInfo.device_time_offset_minutes);
+                        const syncStatus = offset <= 5 ? '✅ Synced' : `⚠️ ${dvrInfo.device_time_offset_minutes}min offset`;
+                        resultHTML += `
+                            <div class="test-info-item">
+                                <span class="test-info-label">Time Sync:</span>
+                                <span>${syncStatus}</span>
+                            </div>
+                        `;
+                    }
+                    
+                    resultHTML += `
+                            <div class="test-info-item" style="grid-column: 1 / -1;">
+                                <span class="test-info-label">Message:</span>
+                                <span>${testResult.message}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    showTestResult(resultHTML, 'success');
+                    
+                    // Add to log
+                    const logMessage = `${pingIcon}${apiIcon} ${dvrInfo.dvr_name} (${ip}) - ${testResult.status}`;
+                    addLogEntry(logMessage, testResult.ping_success ? 'success' : 'error');
+                    
+                    // Refresh dashboard to show updated data
+                    setTimeout(() => {
+                        refreshDashboard();
+                    }, 1000);
+                    
+                } else {
+                    showTestResult(`❌ ${data.message}`, 'error');
+                    addLogEntry(`❌ DVR test failed for ${ip}: ${data.message}`, 'error');
+                }
+
+            } catch (error) {
+                showTestResult(`❌ Error testing DVR: ${error.message}`, 'error');
+                addLogEntry(`❌ Error testing DVR ${ip}: ${error.message}`, 'error');
+            }
+        }
+
+        // Test Camera Status by IP
+        async function testCameraStatus() {
+            const ip = document.getElementById('testIp').value.trim();
+            
+            if (!ip) {
+                showTestResult('Please enter a valid IP address', 'error');
+                return;
+            }
+
+            // Validate IP format
+            const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+            if (!ipRegex.test(ip)) {
+                showTestResult('Please enter a valid IP address format', 'error');
+                return;
+            }
+
+            showTestResult('📹 Testing camera status... Please wait...', 'loading');
+            addLogEntry(`📹 Testing camera status for IP: ${ip}`, 'success');
+
+            try {
+                // First find the DVR by IP
+                const dvrResponse = await fetch(`${API_BASE}/enhanced-monitoring/test-by-ip`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ip: ip })
+                });
+
+                const dvrResponseText = await dvrResponse.text();
+                console.log('DVR API Response:', dvrResponseText);
+                
+                let dvrData;
+                try {
+                    dvrData = JSON.parse(dvrResponseText);
+                } catch (parseError) {
+                    showTestResult(`❌ Invalid JSON response from DVR API: ${parseError.message}`, 'error');
+                    console.error('JSON Parse Error:', parseError);
+                    console.error('Response Text:', dvrResponseText);
+                    return;
+                }
+
+                if (!dvrData.success) {
+                    showTestResult(`❌ ${dvrData.message}`, 'error');
+                    return;
+                }
+
+                const dvrId = dvrData.dvr_info.id;
+
+                // Now test camera status
+                const cameraResponse = await fetch(`${API_BASE}/enhanced-monitoring/test-camera-status/${dvrId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ max_channels: 5 })
+                });
+
+                const cameraResponseText = await cameraResponse.text();
+                console.log('Camera API Response:', cameraResponseText);
+                
+                let cameraData;
+                try {
+                    cameraData = JSON.parse(cameraResponseText);
+                } catch (parseError) {
+                    showTestResult(`❌ Invalid JSON response from camera API: ${parseError.message}`, 'error');
+                    console.error('JSON Parse Error:', parseError);
+                    console.error('Response Text:', cameraResponseText);
+                    return;
+                }
+
+                if (cameraData.success) {
+                    const cameraInfo = cameraData.camera_info;
+                    const workingPercentage = cameraInfo.total_cameras > 0 ? 
+                        Math.round((cameraInfo.working_cameras / cameraInfo.total_cameras) * 100) : 0;
+                    
+                    let statusIcon = '❌';
+                    if (cameraInfo.summary.all_working) statusIcon = '✅';
+                    else if (cameraInfo.summary.some_working) statusIcon = '⚠️';
+                    
+                    let resultHTML = `
+                        <h4>${statusIcon} Camera Status Results</h4>
+                        <div class="dvr-test-info">
+                            <div class="test-info-item">
+                                <span class="test-info-label">DVR Name:</span>
+                                <span>${cameraData.dvr.name}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">IP:Port:</span>
+                                <span>${cameraData.dvr.ip}:${cameraData.dvr.port}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">Total Cameras:</span>
+                                <span>${cameraInfo.total_cameras}</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">Working Cameras:</span>
+                                <span>${cameraInfo.working_cameras} (${workingPercentage}%)</span>
+                            </div>
+                            <div class="test-info-item">
+                                <span class="test-info-label">Status:</span>
+                                <span>${cameraInfo.summary.all_working ? '✅ All Working' : 
+                                       cameraInfo.summary.some_working ? '⚠️ Some Issues' : '❌ None Working'}</span>
+                            </div>
+                    `;
+
+                    // Add individual camera details
+                    if (cameraInfo.cameras && Object.keys(cameraInfo.cameras).length > 0) {
+                        resultHTML += `
+                            <div class="test-info-item" style="grid-column: 1 / -1; margin-top: 10px;">
+                                <span class="test-info-label">Camera Details:</span>
+                            </div>
+                        `;
+                        
+                        Object.entries(cameraInfo.cameras).forEach(([channel, camera]) => {
+                            const cameraIcon = camera.working ? '✅' : '❌';
+                            const errorText = camera.error ? ` (${camera.error})` : '';
+                            resultHTML += `
+                                <div class="test-info-item" style="font-size: 0.9em;">
+                                    <span class="test-info-label">Channel ${channel}:</span>
+                                    <span>${cameraIcon} ${camera.status}${errorText}</span>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    resultHTML += `</div>`;
+                    
+                    showTestResult(resultHTML, 'success');
+                    
+                    // Add to log
+                    const logMessage = `📹 ${cameraData.dvr.name} (${ip}) - ${cameraInfo.working_cameras}/${cameraInfo.total_cameras} cameras working`;
+                    addLogEntry(logMessage, cameraInfo.working_cameras > 0 ? 'success' : 'error');
+                    
+                } else {
+                    showTestResult(`❌ ${cameraData.message}`, 'error');
+                    addLogEntry(`❌ Camera test failed for ${ip}: ${cameraData.message}`, 'error');
+                }
+
+            } catch (error) {
+                showTestResult(`❌ Error testing cameras: ${error.message}`, 'error');
+                addLogEntry(`❌ Error testing cameras for ${ip}: ${error.message}`, 'error');
+            }
+        }
+
+        // Get Real-time Video Streaming
+        async function getStreamingUrls() {
+            const ip = document.getElementById('testIp').value.trim();
+            
+            if (!ip) {
+                showTestResult('Please enter a valid IP address', 'error');
+                return;
+            }
+
+            showTestResult('🎥 Loading real-time video streams... Please wait...', 'loading');
+            addLogEntry(`🎥 Starting video streams from ${ip}`, 'success');
+
+            try {
+                // Get streaming info
+                const response = await fetch(`${API_BASE}/streaming/dvr/${ip}/snapshot`, {
+                    method: 'GET'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const streamingInfo = data.streaming_info;
+                    
+                    let resultHTML = `
+                        <h4>🎥 Real-time Video Streaming</h4>
+                        <div style="background: #e7f3ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                            <strong>📊 DVR:</strong> ${streamingInfo.dvr.name} (${streamingInfo.dvr.ip}:${streamingInfo.dvr.port}) | 
+                            <strong>Channels:</strong> ${streamingInfo.summary.total_channels}
+                        </div>
+                        <div class="video-grid">
+                    `;
+                    
+                    // Add video streams for each channel
+                    streamingInfo.channels.forEach(channel => {
+                        const channelNum = channel.channel_number;
+                        const proxyStreamMain = `${API_BASE}/streaming/dvr/${ip}/stream/${channelNum}?subtype=0`;
+                        const proxyStreamSub = `${API_BASE}/streaming/dvr/${ip}/stream/${channelNum}?subtype=1`;
+                        const rtspUrl = channel.rtsp_main_stream;
+                        
+                        resultHTML += `
+                            <div class="video-card">
+                                <h6>📹 Channel ${channelNum} - Live Stream</h6>
+                                <div class="video-container">
+                                    <img class="video-stream" 
+                                         src="${proxyStreamMain}" 
+                                         alt="Channel ${channelNum} Stream"
+                                         onerror="console.error('Stream failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                         onload="console.log('Stream loaded successfully:', this.src); this.nextElementSibling.style.display='none';">
+                                    <div class="video-fallback">
+                                        📺 Loading stream...<br>
+                                        <small>Check console for errors</small>
+                                    </div>
+                                </div>
+                                <div class="stream-controls">
+                                    <button class="stream-btn active" onclick="switchStream(this, '${proxyStreamMain}', ${channelNum})">MJPEG Main</button>
+                                    <button class="stream-btn" onclick="switchStream(this, '${proxyStreamSub}', ${channelNum})">MJPEG Sub</button>
+                                    <button class="stream-btn" onclick="openVLC('${rtspUrl}')">VLC RTSP</button>
+                                </div>
+                                <details style="margin-top: 8px;">
+                                    <summary style="cursor: pointer; font-size: 0.85em;">🔗 All URLs</summary>
+                                    <div class="url-list">
+                                        <div class="url-item"><strong>RTSP Main:</strong><br><code>${rtspUrl}</code></div>
+                                        <div class="url-item"><strong>RTSP Sub:</strong><br><code>${channel.rtsp_sub_stream_1}</code></div>
+                                        <div class="url-item"><strong>MJPEG Main:</strong><br><code>${channel.mjpeg_main_stream}</code></div>
+                                        <div class="url-item"><strong>MJPEG Sub:</strong><br><code>${channel.mjpeg_sub_stream_1}</code></div>
+                                    </div>
+                                </details>
+                            </div>
+                        `;
+                    });
+                    
+                    resultHTML += `
+                        </div>
+                        <div style="background: #d4edda; padding: 10px; border-radius: 5px; margin-top: 15px; font-size: 0.9em;">
+                            <strong>💡 Streaming Tips:</strong><br>
+                            • MJPEG streams may require authentication (use VLC if blocked)<br>
+                            • RTSP streams work best with VLC Media Player<br>
+                            • Main = High quality, Sub = Lower bandwidth<br>
+                            • Use snapshots for quick camera preview
+                        </div>
+                    `;
+                    
+                    showTestResult(resultHTML, 'success');
+                    addLogEntry(`🎥 Live streams loaded for ${streamingInfo.summary.total_channels} channels`, 'success');
+                    
+                } else {
+                    showTestResult(`❌ ${data.message}`, 'error');
+                    addLogEntry(`❌ Streaming failed for ${ip}: ${data.message}`, 'error');
+                }
+
+            } catch (error) {
+                showTestResult(`❌ Error loading video streams: ${error.message}`, 'error');
+                addLogEntry(`❌ Error loading streams from ${ip}: ${error.message}`, 'error');
+            }
+        }
+
+        // Switch video stream
+        function switchStream(button, url, channel) {
+            const videoCard = button.closest('.video-card');
+            const videoImg = videoCard.querySelector('.video-stream');
+            const fallback = videoCard.querySelector('.video-fallback');
+            
+            // Update active button
+            videoCard.querySelectorAll('.stream-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Switch stream
+            videoImg.style.display = 'block';
+            fallback.style.display = 'none';
+            videoImg.src = url;
+            
+            addLogEntry(`🔄 Switched Channel ${channel} to ${button.textContent}`, 'success');
+        }
+
+        // Open RTSP in VLC
+        function openVLC(rtspUrl) {
+            // Copy to clipboard and show instructions
+            navigator.clipboard.writeText(rtspUrl).then(() => {
+                alert(`RTSP URL copied to clipboard!\n\nTo view in VLC:\n1. Open VLC Media Player\n2. Go to Media > Open Network Stream\n3. Paste the URL and click Play\n\nURL: ${rtspUrl}`);
+            }).catch(() => {
+                alert(`Open VLC Media Player and use this URL:\n\n${rtspUrl}\n\nGo to Media > Open Network Stream and paste this URL.`);
+            });
+        }
+
+        // Refresh snapshot
+        function refreshSnapshot(url, channel) {
+            const img = document.querySelector(`img[alt="Channel ${channel} Snapshot"]`);
+            if (img) {
+                // Add timestamp to force refresh
+                const refreshUrl = url + (url.includes('?') ? '&' : '?') + 't=' + Date.now();
+                img.src = refreshUrl;
+                addLogEntry(`🔄 Refreshed Channel ${channel} snapshot`, 'success');
+            }
+        }
+
+        // Download snapshot
+        function downloadSnapshot(url, channel) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `channel_${channel}_snapshot_${Date.now()}.jpg`;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            addLogEntry(`💾 Downloaded Channel ${channel} snapshot`, 'success');
+        }
+
+        // Open snapshot in fullscreen
+        function openSnapshotFullscreen(url, channel) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0,0,0,0.9);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                cursor: pointer;
+            `;
+            
+            const img = document.createElement('img');
+            img.src = url;
+            img.style.cssText = `
+                max-width: 95%;
+                max-height: 95%;
+                object-fit: contain;
+                border-radius: 5px;
+            `;
+            
+            const closeBtn = document.createElement('div');
+            closeBtn.innerHTML = '✕';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 20px;
+                right: 30px;
+                color: white;
+                font-size: 30px;
+                font-weight: bold;
+                cursor: pointer;
+                z-index: 10001;
+            `;
+            
+            modal.appendChild(img);
+            modal.appendChild(closeBtn);
+            document.body.appendChild(modal);
+            
+            // Close on click
+            modal.addEventListener('click', () => {
+                document.body.removeChild(modal);
+            });
+            
+            addLogEntry(`🔍 Opened Channel ${channel} snapshot in fullscreen`, 'success');
+        }
+
+        // Get Latest Snapshot with Streaming Fallbacks
+        async function getLatestSnapshot() {
+            const ip = document.getElementById('testIp').value.trim();
+            
+            if (!ip) {
+                showTestResult('Please enter a valid IP address', 'error');
+                return;
+            }
+
+            showTestResult('📸 Getting latest snapshot... Please wait...', 'loading');
+            addLogEntry(`📸 Getting snapshot from ${ip}`, 'success');
+
+            try {
+                const response = await fetch(`${API_BASE}/streaming/dvr/${ip}/snapshot`, {
+                    method: 'GET'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const snapshotInfo = data.snapshot_info;
+                    const streamingInfo = data.streaming_info;
+                    
+                    let resultHTML = `
+                        <h4>📸 Live Camera Snapshots</h4>
+                        <div style="background: #e7f3ff; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                            <strong>📊 DVR:</strong> ${data.dvr.name} (${data.dvr.ip}:${data.dvr.port}) | 
+                            <strong>Timestamp:</strong> ${new Date(snapshotInfo.timestamp).toLocaleString()}
+                        </div>
+                        <div class="snapshot-grid">
+                    `;
+                    
+                    // Handle multiple channels snapshot
+                    if (snapshotInfo.channels) {
+                        Object.values(snapshotInfo.channels).forEach(channelData => {
+                            const channel = channelData.channel;
+                            const proxyUrl = `${API_BASE}/streaming/dvr/${ip}/image/${channel}`;
+                            
+                            resultHTML += `
+                                <div class="snapshot-card">
+                                    <h6>📹 Channel ${channel}</h6>
+                                    <div class="snapshot-container">
+                                        <img class="snapshot-image" 
+                                             src="${proxyUrl}" 
+                                             alt="Channel ${channel} Snapshot"
+                                             onclick="openSnapshotFullscreen('${proxyUrl}', ${channel})"
+                                             onerror="console.error('Image failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                                             onload="console.log('Image loaded successfully:', this.src); this.nextElementSibling.style.display='none';">
+                                        <div class="snapshot-fallback">
+                                            📷 Loading snapshot...<br>
+                                            <small>Check console for errors</small>
+                                        </div>
+                                    </div>
+                                    <div style="margin-top: 8px;">
+                                        <button class="stream-btn" onclick="refreshSnapshot('${proxyUrl}', ${channel})">🔄 Refresh</button>
+                                        <button class="stream-btn" onclick="downloadSnapshot('${proxyUrl}', ${channel})">💾 Save</button>
+                                    </div>
+                                    <details style="margin-top: 8px;">
+                                        <summary style="cursor: pointer; font-size: 0.85em;">🔗 Alternative URLs</summary>
+                                        <div class="url-list">
+                            `;
+                            
+                            Object.entries(channelData.all_urls).forEach(([type, url]) => {
+                                const displayType = type.replace(/_/g, ' ').toUpperCase();
+                                resultHTML += `<div class="url-item"><strong>${displayType}:</strong><br><code>${url}</code></div>`;
+                            });
+                            
+                            resultHTML += `
+                                        </div>
+                                    </details>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    resultHTML += `
+                        </div>
+                        
+                        <div style="margin: 15px 0;">
+                            <h5>🎥 Streaming Options (with Fallbacks):</h5>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                    `;
+                    
+                    // Add streaming options for each channel
+                    streamingInfo.channels.forEach((channel, index) => {
+                        resultHTML += `
+                            <div style="margin-bottom: 15px; padding: 10px; background: white; border-radius: 5px;">
+                                <h6>📹 Channel ${channel.channel_number}:</h6>
+                                <div style="font-size: 0.9em; line-height: 1.4;">
+                                    <strong>Primary (RTSP Main):</strong><br>
+                                    <code style="background: #e9ecef; padding: 2px 4px; border-radius: 3px; font-size: 0.8em; word-break: break-all;">${channel.rtsp_main_stream}</code><br>
+                                    
+                                    <strong>Fallback 1 (MJPEG Main):</strong><br>
+                                    <code style="background: #e9ecef; padding: 2px 4px; border-radius: 3px; font-size: 0.8em; word-break: break-all;">${channel.mjpeg_main_stream}</code><br>
+                                    
+                                    <strong>Fallback 2 (RTSP Sub):</strong><br>
+                                    <code style="background: #e9ecef; padding: 2px 4px; border-radius: 3px; font-size: 0.8em; word-break: break-all;">${channel.rtsp_sub_stream_1}</code><br>
+                                    
+                                    <strong>Fallback 3 (MJPEG Sub):</strong><br>
+                                    <code style="background: #e9ecef; padding: 2px 4px; border-radius: 3px; font-size: 0.8em; word-break: break-all;">${channel.mjpeg_sub_stream_1}</code>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    resultHTML += `
+                            </div>
+                            <div style="background: #e7f3ff; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                                <span style="font-size: 0.9em;">
+                                    <strong>💡 Streaming Priority:</strong><br>
+                                    1. <strong>RTSP Main</strong> - Best quality, use in VLC<br>
+                                    2. <strong>MJPEG Main</strong> - Web browser compatible<br>
+                                    3. <strong>RTSP Sub</strong> - Lower bandwidth RTSP<br>
+                                    4. <strong>MJPEG Sub</strong> - Lowest bandwidth web stream
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    showTestResult(resultHTML, 'success');
+                    
+                    // Add to log
+                    const logMessage = `📸 Snapshot retrieved from ${ip} with ${streamingInfo.summary.total_channels} streaming fallbacks`;
+                    addLogEntry(logMessage, 'success');
+                    
+                } else {
+                    showTestResult(`❌ ${data.message}`, 'error');
+                    addLogEntry(`❌ Snapshot failed for ${ip}: ${data.message}`, 'error');
+                }
+
+            } catch (error) {
+                showTestResult(`❌ Error getting snapshot: ${error.message}`, 'error');
+                addLogEntry(`❌ Error getting snapshot from ${ip}: ${error.message}`, 'error');
+            }
+        }
+
+        function showTestResult(message, type) {
+            const resultDiv = document.getElementById('ipTestResult');
+            resultDiv.innerHTML = message;
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.style.display = 'block';
+        }
+
+        // Allow Enter key to trigger test
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('testIp').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    testDvrByIp();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
